@@ -33,7 +33,8 @@ const zukan = defineCollection({
     creators: z.array(z.object({
       name: z.string(),
       nameEn: z.string().optional(),
-      wikidata: z.string().optional(),
+      // 同じ人をまとめるための自前の鍵。表記が揺れても同一人物として扱える。
+      personId: z.string().optional(),
     })).optional(),
     birthplace: z.object({
       label: z.string(),

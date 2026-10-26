@@ -64,7 +64,7 @@ if (files.length === 0) {
 }
 
 const seenNo = new Map();
-const creatorPages = new Map(); // 人名 -> { pages: [], wikidata: Set }
+const creatorPages = new Map(); // 人名 -> { pages: [], ids: Set }
 
 for (const file of files) {
   const raw = readFileSync(join(zukanDir, file), 'utf8');
@@ -130,16 +130,16 @@ for (const file of files) {
   // --- 7. 人物の同一視
   for (const c of data?.creators ?? []) {
     if (!c?.name) continue;
-    const rec = creatorPages.get(c.name) ?? { pages: [], wikidata: new Set() };
+    const rec = creatorPages.get(c.name) ?? { pages: [], ids: new Set() };
     rec.pages.push(file);
-    if (c.wikidata) rec.wikidata.add(c.wikidata);
+    if (c.personId) rec.ids.add(c.personId);
     creatorPages.set(c.name, rec);
   }
 }
 
 for (const [name, rec] of creatorPages) {
-  if (rec.pages.length >= 2 && rec.wikidata.size === 0) {
-    warn(rec.pages.join(', '), `「${name}」が2ページ以上に出ますが wikidata がありません。人物相関図で別人になります`);
+  if (rec.pages.length >= 2 && rec.ids.size === 0) {
+    warn(rec.pages.join(', '), `「${name}」が2ページ以上に出ますが personId がありません。人物相関図で別人になります`);
   }
 }
 
