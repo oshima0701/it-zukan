@@ -1,0 +1,121 @@
+---
+no: 5
+name: VS Code
+reading: ぶいえすこーど
+type: tool
+oneLine: いちばん広く使われている、文字を書くための道具。
+surprise: >
+  VS Code は、Webページを作る技術で作られています。
+  つまり、ブラウザの中身をアプリの皮に包んだものです。
+takeaway: >
+  VS Code の強みは機能の多さではなく、必要なものだけ後から足せることです。足さなければ軽いままです。
+status:
+  difficulty: 2
+  popularity: 5
+  breadth: 5
+order: 50
+updated: 2026-10-26
+born: 2015
+creators:
+  - name: マイクロソフト
+    nameEn: Microsoft
+  - name: エーリヒ・ガンマ
+    nameEn: Erich Gamma
+birthplace:
+  label: スイス・チューリッヒ（マイクロソフトの開発拠点）
+  lat: 47.37
+  lng: 8.54
+mascot:
+  name: なし
+officialUrl: https://code.visualstudio.com/
+aliases: [VSCode, Visual Studio Code, ブイエスコード]
+related:
+  - slug: ide
+    relation: partner
+    note: ここまで足すとIDEに近づく
+sources:
+  - id: 1
+    title: Visual Studio Code 公式サイト
+    url: https://code.visualstudio.com/
+    accessed: 2026-10-26
+  - id: 2
+    title: microsoft/vscode - GitHub（ソースコードとライセンス）
+    url: https://github.com/microsoft/vscode
+    accessed: 2026-10-26
+  - id: 3
+    title: Visual Studio Code - Wikipedia
+    url: https://en.wikipedia.org/wiki/Visual_Studio_Code
+    accessed: 2026-10-26
+  - id: 4
+    title: Visual Studio Code FAQ（配布物とソースの関係）
+    url: https://code.visualstudio.com/docs/supporting/faq
+    accessed: 2026-10-26
+---
+
+{/* block: birth */}
+## なぜブラウザの技術でエディタを作ったのか？
+
+2015年、マイクロソフトは VS Code を公開しました<Cite n={3} />。当時としては意外な作りでした。中身が、Webページを表示するための技術でできていたのです<Cite n={3} />。
+
+ねらいは、Windows・Mac・Linux のどれでも同じものを動かすことでした。それぞれのOS向けに別々に作れば、同じ機能を3回作ることになります。ブラウザの仕組みを土台にすれば、一度書けば3つで動きます。
+
+代わりに失ったのは軽さです。昔ながらのエディタに比べれば重く、「エディタひとつにこの大きさか」という声は当時からありました。それでも広まったのは、後から必要なものだけを足せる作りにしたからです。
+
+ソースコードは公開されていて、誰でも読めます<Cite n={2} />。ただし、公式サイトから配られているものと、公開されているソースをそのまま組み立てたものは、商標やライセンスの扱いが別になっています<Cite n={4} />。
+
+{/* block: naming */}
+## 名前の由来：先にあった「Visual Studio」
+
+マイクロソフトには以前から Visual Studio という大がかりな開発環境がありました。VS Code の名前は、そこから「Visual Studio」を借りて「Code」を足したものです。
+
+ただし中身は別物です。Visual Studio は何でも揃った大箱、VS Code は小さな本体に必要なものを足していく形。名前が似ているせいで同じものの軽量版だと思われがちですが、作りからして違います。
+
+{/* block: analogy */}
+## たとえ話：道具箱ではなく、取っ手
+
+VS Code は、最初から道具が詰まった箱ではありません。まず取っ手だけがあって、使う道具を自分で差し込んでいく形です。
+
+Pythonを書くならPythonの拡張を、日本語で使いたいなら日本語の拡張を差し込みます。差し込まなければ、そのぶん軽いままです。人によって中身がまったく違う道具になります。
+
+{/* block: figure */}
+## 小さな本体に、使うものだけ足す
+
+<Figure name="vscode-core-ext" caption="本体がするのは、書く・探す・記録するところまで。言語ごとの支援やAIの補助は、拡張として後から足します" />
+
+{/* block: skills */}
+## 最初に覚える3つ
+
+| やりたいこと | 押すキー |
+|---|---|
+| 何でも呼び出す | `Ctrl` + `Shift` + `P` |
+| ファイルを名前で開く | `Ctrl` + `P` |
+| フォルダ全体から文字を探す | `Ctrl` + `Shift` + `F` |
+
+1つめだけ覚えれば足ります。`Ctrl` + `Shift` + `P` を押すと入力欄が出て、やりたいことを日本語や英語で打つと、該当する機能が候補に出ます。メニューの場所を覚える必要がありません<Cite n={1} />。
+
+{/* block: you */}
+## あなたとの関係
+
+文字を書く道具なので、使い道はプログラムに限りません。設定ファイル、メモ、CSV、ログ。中身が文字であるものなら何でも開けます。
+
+Excelで開くと列がずれてしまうCSVを、素のまま確認したいとき。文字コードの違いで文字化けしたファイルの中身を見たいとき。そういうときにも使えます。
+
+{/* block: internet */}
+## ネットでの扱われ方
+
+開発者アンケートで、最も使われている開発環境として毎年のように上位に挙がります<Cite n={3} />。あまりに標準になったため、「とりあえず VS Code 入れといて」で話が通じてしまう状態です。
+
+一方で、拡張を入れすぎて重くなる、という不満も定番です。身軽さが売りだったはずが、気づくと箱いっぱいになっている。これは道具箱あるあるでもあります。
+
+{/* block: firststep */}
+## 今日5分でできること
+
+VS Code を開いて `Ctrl` + `Shift` + `P` を押し、`japanese` と打ってみてください。日本語表示にする拡張が候補に出ます。
+
+入れて再起動すると、メニューが日本語になります。最初の「足す」体験としてちょうどよい大きさです。
+
+{/* block: materials */}
+## 無料教材
+
+- [Visual Studio Code ドキュメント](https://code.visualstudio.com/docs)（無料・英語）
+- [Visual Studio Code FAQ](https://code.visualstudio.com/docs/supporting/faq)（無料・英語。配布物とソースの違いなど）
