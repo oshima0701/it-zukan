@@ -1,0 +1,124 @@
+---
+no: 34
+name: MySQL
+reading: まいえすきゅーえる
+type: data
+oneLine: Webの裏側で長く使われてきた、別に立てる形のデータベース。
+surprise: >
+  「My」は「わたしの」ではありません。開発者の娘の名前です。
+  のちに作られた MariaDB は、もう一人の娘の名前から取られています。
+takeaway: >
+  名前にも、分かれた経緯にも、作った人の個人的な事情が刻まれています。技術は人が作っています。
+status:
+  difficulty: 3
+  popularity: 4
+  breadth: 3
+order: 340
+updated: 2026-10-26
+born: 1995
+creators:
+  - name: モンティ・ワイデニウス
+    nameEn: Michael Widenius
+    personId: monty-widenius
+birthplace:
+  label: スウェーデン／フィンランド
+  lat: 60.17
+  lng: 24.94
+mascot:
+  name: Sakila（サキラ）
+  origin: イルカ。公募で名付けられました
+officialUrl: https://www.mysql.com/
+aliases: [マイエスキューエル, マイシークェル]
+related:
+  - slug: sqlite
+    relation: rival
+    note: 同居する形のほう
+  - slug: sql
+    relation: ancestor
+    note: 使う言語
+sources:
+  - id: 1
+    title: MySQL - Wikipedia
+    url: https://en.wikipedia.org/wiki/MySQL
+    accessed: 2026-10-26
+  - id: 2
+    title: MySQL 公式サイト
+    url: https://www.mysql.com/
+    accessed: 2026-10-26
+  - id: 3
+    title: MariaDB - Wikipedia
+    url: https://en.wikipedia.org/wiki/MariaDB
+    accessed: 2026-10-26
+---
+
+{/* block: birth */}
+## Web を支えた組み合わせ
+
+1995年に公開されました<Cite n={1} />。無料で使えて、速く、扱いやすい。この3つが揃っていたことで、Web サイトの裏側として一気に広まります。
+
+当時、Linux・Apache・MySQL・PHP を組み合わせた構成が定番になり、頭文字を取った呼び名まで生まれました。個人が自分のサイトを持てるようになった時代を、下から支えた一つです。
+
+その後、会社の買収が重なり、権利の所在が変わります。これを受けて、もとの開発者が枝分かれさせて作ったのが MariaDB です<Cite n={3} />。
+
+{/* block: naming */}
+## 名前の由来：娘の名前
+
+**My は「わたしの」ではありません。** 開発者モンティ・ワイデニウスの娘の名前です<Cite n={1} />。
+
+そして、のちに枝分かれして作られた MariaDB は、**もう一人の娘**の名前から取られています<Cite n={3} />。
+
+ついでに、初期の開発に使われていた道具にも、三人目の子の名前が付けられていたことが知られています。一貫して家族の名前が使われてきました。
+
+マスコットはイルカの **Sakila** です。名前は公募で決められました<Cite n={1} />。
+
+{/* block: analogy */}
+## たとえ話：常駐する倉庫番
+
+倉庫があり、倉庫番が常駐しています。荷物を入れるのも出すのも、倉庫番に頼みます。
+
+大勢が同時に頼んでも、倉庫番が順番をさばきます。[SQLite](/zukan/sqlite/) の手帳と違い、取り合いになりません。
+
+そのかわり、倉庫番を雇い、休ませず、守る必要があります。立てて運用する手間が、ここにあたります。
+
+{/* block: figure */}
+## 同居する形と、別に立てる形
+
+<Figure name="db-embedded-vs-server" caption="MySQL は右の形です。常時動いていて、複数のアプリから同時に使えます" />
+
+{/* block: skills */}
+## 最初に覚える3つ
+
+| やりたいこと | 書き方 |
+|---|---|
+| つなぐ | `mysql -u 利用者名 -p` |
+| データベースの一覧を見る | `SHOW DATABASES;` |
+| 表の形を見る | `DESCRIBE 表名;` |
+
+末尾のセミコロンを忘れると、いつまでも入力待ちになります。最初に必ずはまる点なので、先に知っておいてください。
+
+{/* block: you */}
+## あなたとの関係
+
+社内のシステムや、使っているWebサービスの裏側で動いている可能性が高いものです。
+
+「データベースが重い」という話が出たとき、それが別に立てられた形のものなら、サーバーの負荷や設定を疑う話になります。どちらの形かを知っていると、話の筋道が見えます。
+
+{/* block: misunderstanding */}
+## よくある誤解：MySQL と MariaDB は同じもの
+
+もとは同じですが、別々に進んでいます<Cite n={3} />。多くの操作は互換ですが、新しい機能では違いが出ています。
+
+手順書を読むときは、どちらの話なのかを確かめてください。「だいたい同じ」で進めて、細部で詰まるのがよくある流れです。
+
+{/* block: firststep */}
+## 今日5分でできること
+
+自分で入れる前に、[公式サイト](https://www.mysql.com/)のダウンロードの欄を見てみてください<Cite n={2} />。
+
+同じ製品に、無料の版と有償の版があることが分かります。この二段構えが、どういう会社に引き取られたかの名残です。名前の由来と合わせて読むと、技術が人と会社の事情の上に乗っていることが見えてきます。
+
+{/* block: materials */}
+## 無料教材
+
+- [MySQL 公式ドキュメント](https://dev.mysql.com/doc/)（無料・英語）
+- [MySQL 公式サイト](https://www.mysql.com/)（無料・日本語あり）
