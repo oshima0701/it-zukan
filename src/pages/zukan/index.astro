@@ -1,0 +1,180 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { TYPES, TYPE_ORDER, STALE_AFTER_DAYS, type TypeKey } from '../../config';
+
+const all = (await getCollection('zukan')).filter((e) => !e.data.draft);
+const base = import.meta.env.BASE_URL;
+
+const items = all
+  .map((e) => {
+    const type = e.data.type as TypeKey;
+    const limit = STALE_AFTER_DAYS[type];
+    const days = Math.floor((Date.now() - new Date(e.data.updated).getTime()) / 86400000);
+    return {
+      slug: e.id,
+      name: e.data.name,
+      reading: e.data.reading,
+      aliases: e.data.aliases,
+      oneLine: e.data.oneLine,
+      no: e.data.no,
+      order: e.data.order,
+      type,
+      updated: new Date(e.data.updated).toISOString().slice(0, 10),
+      stale: limit !== null && days > limit,
+      // 絞り込み用。名前・読み方・別名をまとめた文字列
+      haystack: [e.data.name, e.data.reading, ...e.data.aliases].join(' ').toLowerCase(),
+    };
+  })
+  .sort((a, b) => a.order - b.order);
+
+const counts = TYPE_ORDER.map((t) => ({
+  key: t,
+  label: TYPES[t].label,
+  n: items.filter((i) => i.type === t).length,
+}));
+---
+<Base title="図鑑一覧" description="載っている技術の一覧。タイプと名前で絞り込めます。">
+  <h1>図鑑一覧</h1>
+  <p class="lede">全 {items.length} 種。学ぶ順に並んでいます。</p>
+
+  <div class="controls">
+    <label class="search">
+      <span class="visually-hidden">名前で絞り込む</span>
+      <input type="search" id="q" placeholder="名前・読み方で絞り込む（例: ギット）" autocomplete="off" />
+    </label>
+
+    <div class="filters" role="group" aria-label="タイプで絞り込む">
+      <button type="button" class="chip on" data-type="all">すべて（{items.length}）</button>
+      {counts.map((c) => (
+        <button type="button" class="chip" data-type={c.key} style={`--c: var(--${c.key}); --cbg: var(--${c.key}-bg);`}>
+          {c.label}（{c.n}）
+        </button>
+      ))}
+    </div>
+
+    <label class="sort">
+      <span>並び</span>
+      <select id="sort">
+        <option value="order">学ぶ順</option>
+        <option value="no">図鑑番号</option>
+        <option value="updated">更新が古い順</option>
+      </select>
+    </label>
+  </div>
+
+  <p class="empty" id="empty" hidden>当てはまる項目がありません。</p>
+
+  <ul class="list" id="list">
+    {items.map((i) => (
+      <li class="row" data-type={i.type} data-haystack={i.haystack}
+          data-order={i.order} data-no={i.no} data-updated={i.updated}
+          style={`--c: var(--${i.type}); --cbg: var(--${i.type}-bg);`}>
+        <a href={`${base}zukan/${i.slug}/`}>
+          <span class="band" aria-hidden="true"></span>
+          <span class="text">
+            <span class="head">
+              <strong>{i.name}</strong>
+              <span class="reading">{i.reading}</span>
+              <span class="badge">{TYPES[i.type].label}</span>
+            </span>
+            <span class="one">{i.oneLine}</span>
+            <span class="meta">
+              No.{String(i.no).padStart(3, '0')} ／ {i.updated} 時点
+              {i.stale && <span> ／ 情報が古い可能性があります</span>}
+            </span>
+          </span>
+        </a>
+      </li>
+    ))}
+  </ul>
+</Base>
+
+<style>
+  h1 { font-size: 1.5rem; margin: .5rem 0 .3rem; }
+  .lede { color: var(--ink-soft); font-size: .9rem; margin: 0 0 1.5rem; }
+
+  .controls { display: grid; gap: .8rem; margin-bottom: 1.5rem; }
+  .search input {
+    width: 100%; max-width: 24rem; padding: .55rem .8rem;
+    border: 1px solid var(--line); border-radius: 8px;
+    background: var(--panel); color: var(--ink); font: inherit; font-size: .9rem;
+  }
+  .filters { display: flex; flex-wrap: wrap; gap: .4rem; }
+  .chip {
+    border: 1px solid var(--line); background: var(--panel); color: var(--ink-soft);
+    border-radius: 999px; padding: .25rem .75rem; font: inherit; font-size: .8rem; cursor: pointer;
+  }
+  .chip.on { background: var(--cbg, var(--line)); color: var(--c, var(--ink)); border-color: var(--c, var(--line)); font-weight: 700; }
+  .sort { display: flex; align-items: center; gap: .5rem; font-size: .84rem; color: var(--ink-soft); }
+  .sort select {
+    font: inherit; font-size: .84rem; padding: .3rem .5rem;
+    border: 1px solid var(--line); border-radius: 8px;
+    background: var(--panel); color: var(--ink);
+  }
+
+  .list { list-style: none; margin: 0; padding: 0; display: grid; gap: .6rem; }
+  .row a {
+    display: flex; gap: 0; text-decoration: none;
+    background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
+    overflow: hidden;
+  }
+  .row a:hover { border-color: var(--c); }
+  .band { width: 6px; background: var(--c); flex: 0 0 6px; }
+  .text { display: block; padding: .8rem 1rem; min-width: 0; }
+  .head { display: flex; flex-wrap: wrap; gap: .5rem; align-items: baseline; }
+  .head strong { font-size: 1.02rem; }
+  .reading { font-size: .76rem; color: var(--ink-soft); }
+  .badge {
+    font-size: .7rem; font-weight: 700; color: var(--c);
+    background: var(--cbg); border-radius: 999px; padding: .05rem .5rem;
+  }
+  .one { display: block; font-size: .86rem; margin-top: .2rem; }
+  .meta { display: block; font-size: .72rem; color: var(--ink-soft); margin-top: .35rem; }
+  .empty { color: var(--ink-soft); font-size: .9rem; }
+  .row[hidden] { display: none; }
+</style>
+
+<script is:inline>
+  (function () {
+    var list = document.getElementById('list');
+    var rows = Array.prototype.slice.call(list.querySelectorAll('.row'));
+    var q = document.getElementById('q');
+    var sort = document.getElementById('sort');
+    var empty = document.getElementById('empty');
+    var chips = Array.prototype.slice.call(document.querySelectorAll('.chip'));
+    var type = 'all';
+
+    function apply() {
+      var text = q.value.trim().toLowerCase();
+      var shown = 0;
+      rows.forEach(function (r) {
+        var okType = type === 'all' || r.dataset.type === type;
+        var okText = !text || r.dataset.haystack.indexOf(text) !== -1;
+        var show = okType && okText;
+        r.hidden = !show;
+        if (show) shown++;
+      });
+      empty.hidden = shown !== 0;
+    }
+
+    function resort() {
+      var key = sort.value;
+      var sorted = rows.slice().sort(function (a, b) {
+        if (key === 'updated') return a.dataset.updated.localeCompare(b.dataset.updated);
+        return Number(a.dataset[key]) - Number(b.dataset[key]);
+      });
+      sorted.forEach(function (r) { list.appendChild(r); });
+    }
+
+    chips.forEach(function (c) {
+      c.addEventListener('click', function () {
+        type = c.dataset.type;
+        chips.forEach(function (x) { x.classList.toggle('on', x === c); });
+        apply();
+      });
+    });
+    q.addEventListener('input', apply);
+    sort.addEventListener('change', resort);
+  })();
+</script>

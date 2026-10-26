@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IT技術図鑑 — タイプ分けと町の地図（案）</title>
+<style>
+  :root{
+    --bg:#fbfaf7; --panel:#ffffff; --ink:#1c1a17; --ink-soft:#5d574e;
+    --line:#e3ded4; --shadow:0 1px 2px rgba(28,26,23,.06),0 8px 24px rgba(28,26,23,.06);
+    --kotoba:#2563eb; --dougu:#c2410c; --ai:#7c3aed;
+    --basho:#047857; --shikumi:#be123c; --kura:#a16207;
+    --kotoba-bg:#eaf1ff; --dougu-bg:#fdeee5; --ai-bg:#f1ebfe;
+    --basho-bg:#e4f5ef; --shikumi-bg:#fdeaee; --kura-bg:#f8f0dc;
+    --map-ground:#f3efe6; --map-road:#e6e0d3; --map-ink:#3a352e;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#17161a; --panel:#201f24; --ink:#eceaf0; --ink-soft:#a8a2b0;
+      --line:#34323a; --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);
+      --kotoba:#7aacff; --dougu:#ff9d63; --ai:#b79bff;
+      --basho:#45d6a4; --shikumi:#ff8098; --kura:#e0b44a;
+      --kotoba-bg:#1b2436; --dougu-bg:#33211a; --ai-bg:#272038;
+      --basho-bg:#15302a; --shikumi-bg:#341d24; --kura-bg:#2e2616;
+      --map-ground:#23222a; --map-road:#2e2d36; --map-ink:#d8d4de;
+    }
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Hiragino Kaku Gothic ProN","Yu Gothic UI","Meiryo",system-ui,sans-serif;
+    line-height:1.75; -webkit-text-size-adjust:100%;
+  }
+  .wrap{max-width:1040px; margin:0 auto; padding:40px 16px 80px}
+  header.top{margin-bottom:8px}
+  .eyebrow{font-size:.78rem; letter-spacing:.14em; color:var(--ink-soft); margin:0 0 6px}
+  h1{font-size:clamp(1.5rem,4.5vw,2.1rem); margin:0 0 6px; letter-spacing:-.01em}
+  .lede{color:var(--ink-soft); margin:0 0 36px; font-size:.95rem}
+  h2{font-size:1.15rem; margin:48px 0 4px; letter-spacing:-.01em}
+  h2 .num{color:var(--ink-soft); font-weight:400; margin-right:.5em}
+  .note{color:var(--ink-soft); font-size:.88rem; margin:0 0 20px}
+
+  /* ---- type chips ---- */
+  .chips{display:flex; flex-wrap:wrap; gap:10px; margin:0 0 28px; padding:0; list-style:none}
+  .chip{
+    display:flex; align-items:baseline; gap:.5em;
+    border:1px solid var(--line); border-left:4px solid var(--c);
+    background:var(--cbg); border-radius:8px; padding:8px 14px 8px 12px;
+  }
+  .chip b{color:var(--c); font-size:.95rem}
+  .chip span{font-size:.78rem; color:var(--ink-soft)}
+  .t-kotoba{--c:var(--kotoba); --cbg:var(--kotoba-bg)}
+  .t-dougu{--c:var(--dougu); --cbg:var(--dougu-bg)}
+  .t-ai{--c:var(--ai); --cbg:var(--ai-bg)}
+  .t-basho{--c:var(--basho); --cbg:var(--basho-bg)}
+  .t-shikumi{--c:var(--shikumi); --cbg:var(--shikumi-bg)}
+  .t-kura{--c:var(--kura); --cbg:var(--kura-bg)}
+
+  /* ---- dex cards ---- */
+  .cards{display:grid; gap:18px; grid-template-columns:1fr}
+  @media (min-width:720px){ .cards{grid-template-columns:repeat(3,1fr)} }
+  .card{
+    background:var(--panel); border:1px solid var(--line); border-radius:14px;
+    box-shadow:var(--shadow); overflow:hidden; display:flex; flex-direction:column;
+  }
+  .card .band{height:6px; background:var(--c)}
+  .card .body{padding:16px 16px 18px}
+  .card .no{font-size:.72rem; color:var(--ink-soft); letter-spacing:.08em; margin:0}
+  .card h3{margin:2px 0 2px; font-size:1.2rem}
+  .card .yomi{font-size:.8rem; color:var(--ink-soft); font-weight:400}
+  .badge{
+    display:inline-block; margin:6px 0 10px; padding:2px 9px; border-radius:999px;
+    background:var(--cbg); color:var(--c); font-size:.74rem; font-weight:700;
+  }
+  .one{font-size:.9rem; margin:0 0 12px}
+  dl.meta{margin:0; display:grid; grid-template-columns:5.2em 1fr; gap:3px 8px; font-size:.82rem}
+  dl.meta dt{color:var(--ink-soft)}
+  dl.meta dd{margin:0}
+  .stamp{
+    margin:12px 0 0; padding-top:10px; border-top:1px dashed var(--line);
+    font-size:.72rem; color:var(--ink-soft); display:flex; justify-content:space-between; gap:8px;
+  }
+  .found{color:var(--c); font-weight:700}
+
+  /* ---- map ---- */
+  .mapbox{
+    background:var(--panel); border:1px solid var(--line); border-radius:14px;
+    box-shadow:var(--shadow); padding:10px; overflow-x:auto;
+  }
+  .mapbox svg{display:block; width:100%; min-width:560px; height:auto}
+  .zone-label{font-weight:700; font-size:15px}
+  .zone-sub{font-size:11.5px}
+  .resident{font-size:11px}
+  .counter{
+    display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+    margin:0 0 20px; font-size:.86rem; color:var(--ink-soft);
+  }
+  .bar{flex:1 1 220px; height:8px; border-radius:999px; background:var(--line); overflow:hidden; min-width:160px}
+  .bar i{display:block; height:100%; width:40%; background:linear-gradient(90deg,var(--kotoba),var(--ai))}
+  footer.foot{margin-top:56px; padding-top:18px; border-top:1px solid var(--line); font-size:.8rem; color:var(--ink-soft)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <p class="eyebrow">設計案 / 見た目の確認用モックアップ</p>
+    <h1>IT技術図鑑 — タイプ分けと町の地図</h1>
+    <p class="lede">色とバッジの見え方、図鑑カードの型、町の地図の配置を確かめるための試作です。文章・項目数は仮のもので、事実確認と出典はまだ付いていません。</p>
+  </header>
+
+  <h2><span class="num">1</span>6つのタイプ</h2>
+  <p class="note">1項目に1タイプ。色帯とバッジで見分けます。タイプ名はそのままの言葉だけを使い、造語は作りません。</p>
+  <ul class="chips">
+    <li class="chip t-kotoba"><b>言語タイプ</b><span>HTML・Python など</span></li>
+    <li class="chip t-dougu"><b>ツールタイプ</b><span>Git・VS Code など</span></li>
+    <li class="chip t-ai"><b>AIタイプ</b><span>ChatGPT・Claude など</span></li>
+    <li class="chip t-basho"><b>場所タイプ</b><span>Linux・Docker・クラウド</span></li>
+    <li class="chip t-shikumi"><b>しくみタイプ</b><span>HTTP・API など</span></li>
+    <li class="chip t-kura"><b>データタイプ</b><span>SQLite・MySQL など</span></li>
+  </ul>
+
+  <h2><span class="num">2</span>図鑑カードの型</h2>
+  <p class="note">全ページ同じ並び。タイプごとに色が変わるだけで、項目の位置は動きません。右下の更新日は小さく置き、強調には使いません。</p>
+  <div class="cards">
+
+    <article class="card t-dougu">
+      <div class="band"></div>
+      <div class="body">
+        <p class="no">No.004</p>
+        <h3>Git <span class="yomi">（ギット）</span></h3>
+        <span class="badge">ツールタイプ</span>
+        <p class="one">書いたものを、いつでも昔の状態に戻せるようにする道具。</p>
+        <dl class="meta">
+          <dt>誕生年</dt><dd>2005年</dd>
+          <dt>生みの親</dt><dd>リーナス・トーバルズ</dd>
+          <dt>出身地</dt><dd>アメリカ（本人はフィンランド出身）</dd>
+          <dt>マスコット</dt><dd>なし（公式ロゴのみ）</dd>
+          <dt>難易度</dt><dd>★★★☆☆</dd>
+        </dl>
+        <p class="stamp"><span class="found">登録済み</span><span>2026-10-26 時点</span></p>
+      </div>
+    </article>
+
+    <article class="card t-ai">
+      <div class="band"></div>
+      <div class="body">
+        <p class="no">No.021</p>
+        <h3>Claude Code <span class="yomi">（クロード・コード）</span></h3>
+        <span class="badge">AIタイプ</span>
+        <p class="one">文章で頼むと、自分でファイルを読んで書き換えてくれるAIの相棒。</p>
+        <dl class="meta">
+          <dt>誕生年</dt><dd>2025年</dd>
+          <dt>生みの親</dt><dd>Anthropic</dd>
+          <dt>出身地</dt><dd>アメリカ・サンフランシスコ</dd>
+          <dt>マスコット</dt><dd>なし</dd>
+          <dt>難易度</dt><dd>★★☆☆☆</dd>
+        </dl>
+        <p class="stamp"><span>未登録</span><span>2026-10-26 時点</span></p>
+      </div>
+    </article>
+
+    <article class="card t-kotoba">
+      <div class="band"></div>
+      <div class="body">
+        <p class="no">No.009</p>
+        <h3>Python <span class="yomi">（パイソン）</span></h3>
+        <span class="badge">言語タイプ</span>
+        <p class="one">英語に近い書き方で、短く読みやすく書けることば。</p>
+        <dl class="meta">
+          <dt>誕生年</dt><dd>1991年（開発開始1989年）</dd>
+          <dt>生みの親</dt><dd>グイド・ヴァンロッサム</dd>
+          <dt>出身地</dt><dd>オランダ・アムステルダム</dd>
+          <dt>マスコット</dt><dd>2匹のヘビ（名前の由来は別）</dd>
+          <dt>難易度</dt><dd>★★☆☆☆</dd>
+        </dl>
+        <p class="stamp"><span class="found">登録済み</span><span>2026-10-26 時点</span></p>
+      </div>
+    </article>
+
+  </div>
+
+  <h2><span class="num">3</span>町の地図（トップページ）</h2>
+  <p class="note">区画の名前はタイプ名と同じにしています。「あれはツールの仲間だった」と場所で思い出せるようにするためで、区画だけの別名は付けません。横幅の狭い画面では横にスクロールします。</p>
+  <div class="counter">
+    <span>発見 <strong>12 / 30 種</strong></span>
+    <span class="bar"><i></i></span>
+    <span>言語 3/6・ツール 5/9・AI 1/6</span>
+  </div>
+
+  <div class="mapbox">
+    <svg viewBox="0 0 820 580" role="img" aria-label="技術を町の区画に配置した地図の案">
+      <rect x="0" y="0" width="820" height="580" rx="10" fill="var(--map-ground)"/>
+
+      <g stroke="var(--map-road)" stroke-width="26" stroke-linecap="round">
+        <path d="M410 70 L410 510"/>
+        <path d="M90 290 L730 290"/>
+      </g>
+
+      <circle cx="410" cy="290" r="58" fill="var(--panel)" stroke="var(--line)" stroke-width="2"/>
+      <text x="410" y="285" text-anchor="middle" fill="var(--map-ink)" class="zone-label">スタート</text>
+      <text x="410" y="304" text-anchor="middle" fill="var(--map-ink)" class="zone-sub" opacity=".75">はじめての人はここから</text>
+
+      <g>
+        <rect x="40" y="46" width="320" height="192" rx="12" fill="var(--kotoba-bg)" stroke="var(--kotoba)" stroke-width="2"/>
+        <text x="60" y="76" fill="var(--kotoba)" class="zone-label">言語</text>
+        <text x="60" y="96" fill="var(--map-ink)" class="zone-sub" opacity=".75">コンピュータに指示を書くためのことば</text>
+        <g fill="var(--map-ink)" class="resident">
+          <text x="60" y="126">HTML ・ CSS ・ JavaScript</text>
+          <text x="60" y="148">Python ・ SQL</text>
+          <text x="60" y="170">（将来）TypeScript ・ Go ・ Rust</text>
+          <text x="60" y="192">（将来）Ruby ・ Java ・ C</text>
+          <text x="60" y="216" opacity=".7">※ 日本発コーナーへの入口を Ruby に置く</text>
+        </g>
+      </g>
+
+      <g>
+        <rect x="460" y="46" width="320" height="192" rx="12" fill="var(--dougu-bg)" stroke="var(--dougu)" stroke-width="2"/>
+        <text x="480" y="76" fill="var(--dougu)" class="zone-label">ツール</text>
+        <text x="480" y="96" fill="var(--map-ink)" class="zone-sub" opacity=".75">書く・動かす・記録するための道具</text>
+        <g fill="var(--map-ink)" class="resident">
+          <text x="480" y="126">ターミナル ・ cmd ・ PowerShell</text>
+          <text x="480" y="148">VS Code ・ IDE ・ Git</text>
+          <text x="480" y="170">pip / npm ・ 仮想環境</text>
+          <text x="480" y="192">正規表現 ・ Markdown</text>
+          <text x="480" y="216" opacity=".7">※ ファイルとパスの話はこの区画の入口</text>
+        </g>
+      </g>
+
+      <g>
+        <rect x="40" y="342" width="320" height="192" rx="12" fill="var(--ai-bg)" stroke="var(--ai)" stroke-width="2"/>
+        <text x="60" y="372" fill="var(--ai)" class="zone-label">AI</text>
+        <text x="60" y="392" fill="var(--map-ink)" class="zone-sub" opacity=".75">頼むと書いてくれる相棒と、その使い方</text>
+        <g fill="var(--map-ink)" class="resident">
+          <text x="60" y="422">ChatGPT ・ Claude ・ Gemini</text>
+          <text x="60" y="444">GitHub Copilot ・ Cursor ・ Claude Code</text>
+          <text x="60" y="466">プロンプト ・ ハルシネーション</text>
+          <text x="60" y="488">AIに任せる／自分で確かめるの線引き</text>
+          <text x="60" y="512" opacity=".7">※ 更新日が一番よく動く区画</text>
+        </g>
+      </g>
+
+      <g>
+        <rect x="460" y="342" width="320" height="192" rx="12" fill="var(--shikumi-bg)" stroke="var(--shikumi)" stroke-width="2"/>
+        <text x="480" y="372" fill="var(--shikumi)" class="zone-label">しくみ</text>
+        <text x="480" y="392" fill="var(--map-ink)" class="zone-sub" opacity=".75">Webが動いている裏側の決まりごと</text>
+        <g fill="var(--map-ink)" class="resident">
+          <text x="480" y="422">HTTP ・ API（注文を運ぶ店員）</text>
+          <text x="480" y="444">React ・ Flask ・ Django</text>
+          <text x="480" y="466">セキュリティの基本</text>
+          <text x="480" y="488">やらかし事件簿への入口</text>
+          <text x="480" y="512" opacity=".7">※ 年表・相関図・世界地図はスタートから</text>
+        </g>
+      </g>
+
+      <g>
+        <rect x="40" y="256" width="320" height="64" rx="10" fill="var(--basho-bg)" stroke="var(--basho)" stroke-width="2"/>
+        <text x="60" y="280" fill="var(--basho)" class="zone-label">場所</text>
+        <text x="60" y="302" fill="var(--map-ink)" class="resident">Linux ・ Docker ・ クラウド ・ GitHub</text>
+      </g>
+
+      <g>
+        <rect x="460" y="256" width="320" height="64" rx="10" fill="var(--kura-bg)" stroke="var(--kura)" stroke-width="2"/>
+        <text x="480" y="280" fill="var(--kura)" class="zone-label">データ</text>
+        <text x="480" y="302" fill="var(--map-ink)" class="resident">SQLite ・ MySQL ・（将来）PostgreSQL</text>
+      </g>
+    </svg>
+  </div>
+
+  <footer class="foot">
+    <p>これは見た目を決めるための試作です。採用が決まった要素だけを、本番のサイトに作り直します。<br>
+    年・人名は指示書の候補をそのまま置いたもので、本番ページでは一次情報で確認し、出典を付けます。</p>
+  </footer>
+
+</div>
+</body>
+</html>

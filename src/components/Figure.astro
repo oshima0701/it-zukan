@@ -1,0 +1,27 @@
+---
+// 図解。name で src/components/figures/<name>.astro のSVGを差し込む。
+// 説明文のすぐ隣に置けるよう、本文の途中から呼べる形にしている。
+const figures = import.meta.glob('./figures/*.astro', { eager: true });
+
+interface Props { name: string; caption: string }
+const { name, caption } = Astro.props;
+
+const mod = figures[`./figures/${name}.astro`] as { default: any } | undefined;
+if (!mod) {
+  throw new Error(`図解が見つかりません: src/components/figures/${name}.astro`);
+}
+const Svg = mod.default;
+---
+<figure>
+  <Svg />
+  <figcaption>{caption}</figcaption>
+</figure>
+
+<style>
+  figure {
+    margin: 1.8rem 0; padding: 1rem;
+    background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
+  }
+  figure :global(svg) { display: block; width: 100%; height: auto; }
+  figcaption { margin-top: .6rem; font-size: .84rem; color: var(--ink-soft); }
+</style>

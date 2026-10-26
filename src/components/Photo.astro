@@ -1,0 +1,31 @@
+---
+// 写真。id で画像の登録簿（src/data/images.ts）を引き、
+// 画像とクレジットを必ず一緒に描く。クレジットのない写真は出せない。
+import { IMAGES } from '../data/images';
+
+interface Props { id: string }
+const { id } = Astro.props;
+
+const img = IMAGES[id];
+if (!img) {
+  throw new Error(`画像が登録簿にありません: ${id}（src/data/images.ts に足してください）`);
+}
+const src = `${import.meta.env.BASE_URL}images/${img.file}`;
+---
+<figure>
+  <img src={src} alt={img.caption} width={img.width} height={img.height} loading="lazy" decoding="async" />
+  <figcaption>
+    <span>{img.caption}</span>
+    <small>
+      撮影: {img.author} ／ <a href={img.licenseUrl} rel="noopener">{img.license}</a> ／
+      <a href={img.source} rel="noopener">出典</a>
+    </small>
+  </figcaption>
+</figure>
+
+<style>
+  figure { margin: 1.8rem 0; }
+  img { border-radius: 10px; border: 1px solid var(--line); }
+  figcaption { margin-top: .5rem; font-size: .84rem; color: var(--ink-soft); }
+  figcaption small { display: block; font-size: .76rem; }
+</style>

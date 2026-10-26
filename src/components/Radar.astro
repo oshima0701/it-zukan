@@ -1,0 +1,68 @@
+---
+// ステータスのレーダーチャート。3軸なので三角形。
+// ライブラリを入れず手書きSVG。色はCSS変数から受けるのでダークモードに追従する。
+import { STATUS_LABELS } from '../config';
+
+interface Props {
+  status: { difficulty: number; popularity: number; breadth: number };
+  type: string;
+}
+const { status, type } = Astro.props;
+
+const SIZE = 170;
+const C = SIZE / 2;
+const R = 58;
+const MAX = 5;
+
+const keys = ['difficulty', 'popularity', 'breadth'] as const;
+
+// 真上から時計回りに3方向
+const dirs = keys.map((_, i) => {
+  const a = (-Math.PI / 2) + (i * 2 * Math.PI / 3);
+  return { cos: Math.cos(a), sin: Math.sin(a) };
+});
+
+const at = (i: number, r: number) => [
+  (C + dirs[i].cos * r).toFixed(1),
+  (C + dirs[i].sin * r).toFixed(1),
+];
+
+const rings = [1, 2, 3, 4, 5].map((step) =>
+  dirs.map((_, i) => at(i, (R * step) / MAX).join(',')).join(' ')
+);
+
+const shape = keys
+  .map((k, i) => at(i, (R * status[k]) / MAX).join(','))
+  .join(' ');
+
+const labels = keys.map((k, i) => {
+  const [x, y] = at(i, R + 20);
+  return { text: STATUS_LABELS[k], value: status[k], x, y };
+});
+---
+<div class="radar" style={`--c: var(--${type});`}>
+  <svg viewBox={`0 0 ${SIZE} ${SIZE}`} role="img"
+       aria-label={keys.map((k) => `${STATUS_LABELS[k]} ${status[k]}点（5点満点）`).join('、')}>
+    {rings.map((pts) => <polygon points={pts} class="ring" />)}
+    {dirs.map((_, i) => {
+      const [x, y] = at(i, R);
+      return <line x1={C} y1={C} x2={x} y2={y} class="spoke" />;
+    })}
+    <polygon points={shape} class="shape" />
+    {labels.map((l) => (
+      <text x={l.x} y={l.y} class="label" text-anchor="middle" dominant-baseline="middle">{l.text}</text>
+    ))}
+  </svg>
+  <ul class="visually-hidden">
+    {labels.map((l) => <li>{l.text}: {l.value} / 5</li>)}
+  </ul>
+</div>
+
+<style>
+  .radar { display: flex; justify-content: center; }
+  svg { width: 100%; max-width: 190px; height: auto; overflow: visible; }
+  .ring { fill: none; stroke: var(--line); stroke-width: 1; }
+  .spoke { stroke: var(--line); stroke-width: 1; }
+  .shape { fill: var(--c); fill-opacity: .22; stroke: var(--c); stroke-width: 2; }
+  .label { font-size: 10px; fill: var(--ink-soft); }
+</style>

@@ -1,0 +1,45 @@
+---
+// PCだけ出る目次。見出し（H2）から自動で作る。スマホでは折りたたみ。
+interface Props { headings: { depth: number; slug: string; text: string }[] }
+const { headings } = Astro.props;
+const items = headings.filter((h) => h.depth === 2);
+---
+{items.length > 0 && (
+  <nav class="toc" aria-label="このページの目次">
+    <details>
+      <summary>このページの目次</summary>
+      <ol>
+        {items.map((h) => <li><a href={`#${h.slug}`}>{h.text}</a></li>)}
+      </ol>
+    </details>
+  </nav>
+)}
+
+<style>
+  .toc { font-size: .84rem; }
+  summary { cursor: pointer; color: var(--ink-soft); padding: .4rem 0; }
+  ol { margin: .4rem 0 0; padding-left: 1.2rem; display: grid; gap: .35rem; }
+  a { color: var(--ink-soft); text-decoration: none; }
+  a:hover { color: var(--ink); text-decoration: underline; }
+
+  @media (min-width: 900px) {
+    .toc {
+      position: sticky; top: 1.5rem;
+      border-left: 2px solid var(--line); padding-left: 1rem;
+    }
+    summary { list-style: none; cursor: default; font-weight: 700; color: var(--ink); }
+    summary::-webkit-details-marker { display: none; }
+  }
+</style>
+
+<script is:inline>
+  // PC幅では常に開いておく（折りたたみはスマホのため）
+  (function () {
+    var d = document.querySelector('.toc details');
+    if (!d) return;
+    var mq = window.matchMedia('(min-width: 900px)');
+    function sync() { if (mq.matches) d.open = true; }
+    sync();
+    mq.addEventListener('change', sync);
+  })();
+</script>

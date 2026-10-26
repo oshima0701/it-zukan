@@ -1,0 +1,81 @@
+---
+// 町の地図。区画はタイプと同じ名前。住人（項目）は frontmatter の type から
+// 自動で並ぶので、.mdx を1つ足せば地図にも現れる。
+import { TYPES, TYPE_ORDER, type TypeKey } from '../config';
+
+interface Props { items: { slug: string; name: string; type: TypeKey }[] }
+const { items } = Astro.props;
+const base = import.meta.env.BASE_URL;
+
+// 区画の位置。四隅に大きい4つ、中段の左右に横長の2つ。
+const ZONES: Record<TypeKey, { x: number; y: number; w: number; h: number; cols: number }> = {
+  language:  { x: 30,  y: 30,  w: 350, h: 210, cols: 2 },
+  tool:      { x: 440, y: 30,  w: 350, h: 210, cols: 2 },
+  place:     { x: 30,  y: 262, w: 350, h: 86,  cols: 2 },
+  data:      { x: 440, y: 262, w: 350, h: 86,  cols: 2 },
+  ai:        { x: 30,  y: 370, w: 350, h: 210, cols: 2 },
+  mechanism: { x: 440, y: 370, w: 350, h: 210, cols: 2 },
+};
+
+const grouped = TYPE_ORDER.map((t) => ({
+  key: t,
+  label: TYPES[t].label,
+  blurb: TYPES[t].blurb,
+  zone: ZONES[t],
+  members: items.filter((i) => i.type === t),
+}));
+---
+<div class="mapwrap">
+  <svg viewBox="0 0 820 610" role="img" aria-label="技術をタイプごとの区画に並べた地図">
+    <rect x="0" y="0" width="820" height="610" rx="10" fill="var(--map-ground)" />
+
+    <g stroke="var(--map-road)" stroke-width="26" stroke-linecap="round">
+      <path d="M410 55 L410 555" />
+      <path d="M80 305 L740 305" />
+    </g>
+
+    <a href={`${base}zukan/`}>
+      <circle cx="410" cy="305" r="56" fill="var(--panel)" stroke="var(--line)" stroke-width="2" />
+      <text x="410" y="300" text-anchor="middle" class="z-label" fill="var(--ink)">スタート</text>
+      <text x="410" y="319" text-anchor="middle" class="z-blurb" fill="var(--ink-soft)">はじめての人はここから</text>
+    </a>
+
+    {grouped.map((g) => (
+      <g>
+        <rect x={g.zone.x} y={g.zone.y} width={g.zone.w} height={g.zone.h} rx="12"
+              fill={`var(--${g.key}-bg)`} stroke={`var(--${g.key})`} stroke-width="2" />
+        <text x={g.zone.x + 18} y={g.zone.y + 28} class="z-label" fill={`var(--${g.key})`}>{g.label}</text>
+        <text x={g.zone.x + 18} y={g.zone.y + 46} class="z-blurb" fill="var(--ink-soft)">{g.blurb}</text>
+        {g.members.map((m, idx) => {
+          const col = idx % g.zone.cols;
+          const row = Math.floor(idx / g.zone.cols);
+          const x = g.zone.x + 18 + col * (g.zone.w - 36) / g.zone.cols;
+          const y = g.zone.y + 70 + row * 19;
+          return (
+            <a href={`${base}zukan/${m.slug}/`} data-slug={m.slug}>
+              <text x={x} y={y} class="member" fill="var(--ink)">{m.name}</text>
+            </a>
+          );
+        })}
+        {g.members.length === 0 && (
+          <text x={g.zone.x + 18} y={g.zone.y + 72} class="member" fill="var(--ink-soft)">（まだ住人がいません）</text>
+        )}
+      </g>
+    ))}
+  </svg>
+</div>
+
+<style>
+  .mapwrap {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 14px;
+    box-shadow: var(--shadow); padding: .6rem; overflow-x: auto;
+  }
+  svg { display: block; width: 100%; min-width: 560px; height: auto; }
+  .z-label { font-weight: 700; font-size: 15px; }
+  .z-blurb { font-size: 11px; }
+  .member { font-size: 12px; }
+  a { text-decoration: none; }
+  a:hover .member { text-decoration: underline; }
+  /* 読み終えた項目には地図上でも印を付ける */
+  a[data-read="1"] .member { font-weight: 700; }
+</style>

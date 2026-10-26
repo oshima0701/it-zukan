@@ -1,0 +1,13 @@
+---
+// 出典の番号。本文に <Cite n={1} /> と置くと、ページ末尾の出典欄へ飛ぶ。
+// 標準のMarkdown脚注は使わない（frontmatter から作る出典欄と番号が二重になるため）。
+interface Props { n: number }
+const { n } = Astro.props;
+---
+<sup class="cite"><a href={`#src-${n}`} aria-label={`出典 ${n}`}>[{n}]</a></sup>
+
+<style>
+  .cite { font-size: .7em; }
+  .cite a { text-decoration: none; color: var(--ink-soft); padding: 0 .1em; }
+  .cite a:hover { text-decoration: underline; }
+</style>

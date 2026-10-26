@@ -1,0 +1,181 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import ZukanCard from '../../components/ZukanCard.astro';
+import Toc from '../../components/Toc.astro';
+import Figure from '../../components/Figure.astro';
+import Photo from '../../components/Photo.astro';
+import Cite from '../../components/Cite.astro';
+import { TYPES, type TypeKey } from '../../config';
+
+export async function getStaticPaths() {
+  const all = await getCollection('zukan');
+  const live = all.filter((e) => !e.data.draft);
+  return live.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry, all: live },
+  }));
+}
+
+const { entry, all } = Astro.props;
+const d = entry.data;
+const { Content, headings } = await render(entry);
+const base = import.meta.env.BASE_URL;
+
+const byId = new Map(all.map((e: any) => [e.id, e]));
+const RELATION_LABEL: Record<string, string> = {
+  partner: '相棒',
+  rival: 'ライバル',
+  ancestor: '先祖',
+  descendant: '子孫',
+};
+const related = d.related
+  .map((r: any) => ({ ...r, entry: byId.get(r.slug) }))
+  .filter((r: any) => r.entry);
+
+const type = d.type as TypeKey;
+---
+<Base title={`${d.name}（${d.reading}）`} description={d.oneLine}>
+  <article class="page" style={`--c: var(--${type}); --cbg: var(--${type}-bg);`}>
+
+    <p class="surprise">{d.surprise}</p>
+
+    <div class="cols">
+      <div class="side">
+        <ZukanCard data={d} />
+        <Toc headings={headings} />
+      </div>
+
+      <div class="main">
+        {d.disputed && (
+          <p class="disputed">このページには諸説ある話が含まれます。本文で「諸説あり」と書いた箇所は、情報源によって説が分かれています。</p>
+        )}
+
+        <div class="body">
+          <Content components={{ Figure, Photo, Cite }} />
+        </div>
+
+        {related.length > 0 && (
+          <section class="related">
+            <h2 id="related">相棒・ライバル</h2>
+            <ul>
+              {related.map((r: any) => (
+                <li>
+                  <a href={`${base}zukan/${r.entry.id}/`}>{r.entry.data.name}</a>
+                  <span class="rel">{RELATION_LABEL[r.relation]}</span>
+                  {r.note && <span class="note">{r.note}</span>}
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        <p class="takeaway">{d.takeaway}</p>
+
+        <section class="sources">
+          <h2 id="sources">出典</h2>
+          <ol>
+            {d.sources.map((s: any) => (
+              <li id={`src-${s.id}`}>
+                <a href={s.url} rel="noopener">{s.title}</a>
+                <small>（{new Date(s.accessed).toISOString().slice(0, 10)} 閲覧）</small>
+              </li>
+            ))}
+          </ol>
+        </section>
+      </div>
+    </div>
+  </article>
+</Base>
+
+<style>
+  .page { padding: 1rem 0 0; }
+
+  .surprise {
+    margin: 0 0 2rem; font-size: 1.1rem; line-height: 1.8;
+    max-width: var(--measure);
+  }
+
+  .cols { display: grid; gap: 1.5rem; }
+  @media (min-width: 900px) {
+    .cols { grid-template-columns: 19rem 1fr; gap: 2.5rem; align-items: start; }
+    .side { position: sticky; top: 1.5rem; }
+  }
+
+  .main { min-width: 0; }
+  .body { max-width: var(--measure); }
+  .body :global(h2) {
+    margin: 2.4rem 0 .6rem; font-size: 1.18rem; line-height: 1.5;
+    padding-left: .6rem; border-left: 3px solid var(--c);
+  }
+  .body :global(h3) { margin: 1.6rem 0 .4rem; font-size: 1rem; }
+  .body :global(p), .body :global(ul), .body :global(ol) { margin: 0 0 1rem; }
+  .body :global(pre) {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+    padding: .8rem 1rem; overflow-x: auto; font-size: .85rem;
+  }
+  .body :global(code) { font-size: .9em; }
+  .body :global(blockquote) {
+    margin: 1rem 0; padding: .2rem 0 .2rem 1rem;
+    border-left: 2px solid var(--line); color: var(--ink-soft);
+  }
+
+  .disputed {
+    max-width: var(--measure); margin: 0 0 1.5rem; padding: .7rem 1rem;
+    border: 1px dashed var(--line); border-radius: 8px;
+    font-size: .84rem; color: var(--ink-soft);
+  }
+
+  .related { max-width: var(--measure); }
+  .related h2, .sources h2 {
+    margin: 2.4rem 0 .6rem; font-size: 1.18rem;
+    padding-left: .6rem; border-left: 3px solid var(--c);
+  }
+  .related ul { list-style: none; margin: 0; padding: 0; display: grid; gap: .5rem; }
+  .related li { display: flex; flex-wrap: wrap; gap: .5rem; align-items: baseline; }
+  .rel, .note { font-size: .78rem; color: var(--ink-soft); }
+
+  /* ページで唯一、色と大きさを変える場所 */
+  .takeaway {
+    max-width: var(--measure);
+    margin: 2.8rem 0 0; padding: 1.1rem 1.2rem;
+    background: var(--cbg); border-left: 4px solid var(--c); border-radius: 0 10px 10px 0;
+    font-size: 1.12rem; font-weight: 700; line-height: 1.7; color: var(--c);
+  }
+
+  .sources { max-width: var(--measure); }
+  .sources ol { margin: 0; padding-left: 1.4rem; font-size: .84rem; }
+  .sources li { margin-bottom: .4rem; }
+  .sources small { color: var(--ink-soft); }
+  .sources li:target { background: var(--cbg); }
+</style>
+
+<script is:inline define:vars={{ slug: entry.id }}>
+  // 読んだ記録。末尾の「今日のひとこと」が画面に入った時点で登録する。
+  // ボタンを押させる形は押し忘れで登録率が意味を失い、
+  // 開いただけで登録する形は「読んだ記録」にならないため、この判定にしている。
+  (function () {
+    function read() {
+      try {
+        var v = JSON.parse(localStorage.getItem('zukan:read') || '[]');
+        return Array.isArray(v) ? v : [];
+      } catch (e) { return []; }
+    }
+    function save(list) {
+      try { localStorage.setItem('zukan:read', JSON.stringify(list)); } catch (e) {}
+    }
+
+    var target = document.querySelector('.takeaway');
+    if (!target || !('IntersectionObserver' in window)) return;
+
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        var list = read();
+        if (list.indexOf(slug) === -1) { list.push(slug); save(list); }
+        io.disconnect();
+      });
+    }, { threshold: 0.6 });
+    io.observe(target);
+  })();
+</script>

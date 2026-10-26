@@ -1,0 +1,92 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import TownMap from '../components/TownMap.astro';
+import { TYPES, TYPE_ORDER, SITE_TAGLINE, type TypeKey } from '../config';
+
+const all = (await getCollection('zukan')).filter((e) => !e.data.draft);
+const base = import.meta.env.BASE_URL;
+
+const items = all
+  .sort((a, b) => a.data.order - b.data.order)
+  .map((e) => ({ slug: e.id, name: e.data.name, type: e.data.type as TypeKey }));
+
+const grouped = TYPE_ORDER.map((t) => ({
+  key: t,
+  label: TYPES[t].label,
+  members: items.filter((i) => i.type === t),
+}));
+---
+<Base title="IT技術図鑑" description={SITE_TAGLINE}>
+  <p class="lede">{SITE_TAGLINE}</p>
+
+  <p class="counter">
+    発見 <strong><span id="found">0</span> / {items.length} 種</strong>
+    <span class="bar"><i id="bar"></i></span>
+  </p>
+
+  <TownMap items={items} />
+
+  <h2>区画ごとの一覧</h2>
+  <p class="note">地図を横に動かさずに探したいときはこちらから。</p>
+  <div class="zones">
+    {grouped.map((g) => (
+      <section class="zone" style={`--c: var(--${g.key}); --cbg: var(--${g.key}-bg);`}>
+        <h3>{g.label}</h3>
+        {g.members.length === 0
+          ? <p class="none">まだ住人がいません。</p>
+          : <ul>{g.members.map((m) => <li><a href={`${base}zukan/${m.slug}/`}>{m.name}</a></li>)}</ul>}
+      </section>
+    ))}
+  </div>
+</Base>
+
+<style>
+  .lede { color: var(--ink-soft); margin: .5rem 0 1.2rem; font-size: .95rem; }
+  .counter {
+    display: flex; align-items: center; gap: .9rem; flex-wrap: wrap;
+    font-size: .88rem; color: var(--ink-soft); margin: 0 0 1rem;
+  }
+  .bar {
+    flex: 1 1 200px; min-width: 140px; height: 8px; border-radius: 999px;
+    background: var(--line); overflow: hidden;
+  }
+  .bar i {
+    display: block; height: 100%; width: 0%;
+    background: linear-gradient(90deg, var(--language), var(--ai));
+  }
+  h2 { font-size: 1.12rem; margin: 2.5rem 0 .3rem; }
+  .note { color: var(--ink-soft); font-size: .84rem; margin: 0 0 1rem; }
+  .zones { display: grid; gap: 1rem; grid-template-columns: 1fr; }
+  @media (min-width: 640px) { .zones { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 960px) { .zones { grid-template-columns: repeat(3, 1fr); } }
+  .zone {
+    background: var(--panel); border: 1px solid var(--line);
+    border-left: 4px solid var(--c); border-radius: 10px; padding: .8rem 1rem;
+  }
+  .zone h3 { margin: 0 0 .4rem; font-size: .95rem; color: var(--c); }
+  .zone ul { margin: 0; padding-left: 1.1rem; font-size: .88rem; display: grid; gap: .2rem; }
+  .none { margin: 0; font-size: .84rem; color: var(--ink-soft); }
+</style>
+
+<script is:inline>
+  // 読んだ記録は localStorage。使えない環境でも表示が壊れないようにする。
+  (function () {
+    var read = [];
+    try {
+      read = JSON.parse(localStorage.getItem('zukan:read') || '[]');
+      if (!Array.isArray(read)) read = [];
+    } catch (e) { read = []; }
+
+    var total = document.querySelectorAll('.zone li').length;
+    var found = document.getElementById('found');
+    var bar = document.getElementById('bar');
+    if (found) found.textContent = String(read.length);
+    if (bar && total > 0) bar.style.width = Math.min(100, (read.length / total) * 100) + '%';
+
+    read.forEach(function (slug) {
+      var a = document.querySelector('a[data-slug="' + slug + '"]');
+      if (a) a.setAttribute('data-read', '1');
+    });
+  })();
+</script>

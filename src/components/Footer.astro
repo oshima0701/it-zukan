@@ -1,0 +1,21 @@
+---
+import { FOOTER_NOTE } from '../config';
+---
+<footer>
+  <p>{FOOTER_NOTE}</p>
+  <nav>
+    <a href={import.meta.env.BASE_URL}>町の地図</a>
+    <a href={`${import.meta.env.BASE_URL}zukan/`}>図鑑一覧</a>
+    <a href={`${import.meta.env.BASE_URL}about/`}>この図鑑について</a>
+  </nav>
+</footer>
+
+<style>
+  footer {
+    margin-top: 4rem; padding: 1.5rem 0 3rem;
+    border-top: 1px solid var(--line);
+    color: var(--ink-soft); font-size: .82rem;
+  }
+  p { margin: 0 0 .5rem; }
+  nav { display: flex; gap: 1.2rem; flex-wrap: wrap; }
+</style>
