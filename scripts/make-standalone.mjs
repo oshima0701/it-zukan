@@ -13,6 +13,12 @@ import { fileURLToPath } from 'node:url';
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const dist = join(root, 'dist');
 
+// 公開先がサブパス（/it-zukan/ など）のとき、HTMLの中のリンクは
+// /it-zukan/zukan/ の形で書かれている。相対パスに直すときは、
+// この先頭の /it-zukan を取り除いてからでないと
+// /it-zukan/it-zukan/zukan/ を指す壊れたリンクになる。
+const BASE = (process.env.BASE_PATH ?? '/').replace(/^\/+/, '').replace(/\/+$/, '');
+
 function htmlFiles(dir) {
   const out = [];
   for (const name of readdirSync(dir)) {
@@ -35,7 +41,12 @@ for (const file of htmlFiles(dist)) {
   const before = html;
 
   // 先頭が / のリンクを相対パスに（// で始まる外部URLは触らない）
-  html = html.replace(/(href|src)="\/(?!\/)([^"]*)"/g, (_m, attr, path) => `${attr}="${prefix}${path}"`);
+  html = html.replace(/(href|src)="\/(?!\/)([^"]*)"/g, (_m, attr, path) => {
+    let p = path;
+    if (BASE && (p === BASE || p.startsWith(BASE + '/'))) p = p.slice(BASE.length + 1);
+    if (p === '') p = 'index.html';
+    return `${attr}="${prefix}${p}"`;
+  });
 
   // フォルダで終わるリンクは index.html まで書く。
   // 外部サイト（https:// など）とページ内リンク（#）には触らない。

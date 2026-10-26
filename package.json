@@ -6,10 +6,11 @@
   "scripts": {
     "dev": "astro dev",
     "check": "node scripts/check-pages.mjs",
-    "build": "npm run check && astro build && node scripts/make-standalone.mjs",
-    "build:only": "astro build && node scripts/make-standalone.mjs",
+    "build": "npm run check && astro build && node scripts/make-standalone.mjs && node scripts/check-internal-links.mjs",
+    "build:only": "astro build && node scripts/make-standalone.mjs && node scripts/check-internal-links.mjs",
     "preview": "astro preview",
-    "links": "node scripts/check-links.mjs"
+    "links": "node scripts/check-links.mjs",
+    "links:internal": "node scripts/check-internal-links.mjs"
   },
   "dependencies": {
     "@astrojs/markdown-remark": "^7.3.4",
