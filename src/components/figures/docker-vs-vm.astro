@@ -1,0 +1,41 @@
+---
+// 仮想マシンとコンテナの違い。OSを丸ごと積むかどうか。
+---
+<svg viewBox="0 0 440 230" role="img" aria-label="仮想マシンはアプリごとにOSを積むが、コンテナはOSを共有するという比較図">
+  <text x="104" y="20" font-size="10" fill="var(--ink-soft)">仮想マシン：OSごと積む</text>
+  <g stroke="var(--line)" stroke-width="1.5">
+    <rect x="14" y="28" width="86" height="26" rx="5" fill="var(--panel)"/>
+    <rect x="108" y="28" width="86" height="26" rx="5" fill="var(--panel)"/>
+    <rect x="14" y="58" width="86" height="40" rx="5" fill="var(--wash, var(--panel))"/>
+    <rect x="108" y="58" width="86" height="40" rx="5" fill="var(--wash, var(--panel))"/>
+    <rect x="14" y="102" width="180" height="24" rx="5" fill="var(--panel)"/>
+    <rect x="14" y="130" width="180" height="24" rx="5" fill="var(--panel)"/>
+  </g>
+  <g font-size="9" text-anchor="middle" fill="var(--ink-soft)">
+    <text x="57" y="45">アプリ</text><text x="151" y="45">アプリ</text>
+    <text x="57" y="76">OS</text><text x="57" y="90">まるごと</text>
+    <text x="151" y="76">OS</text><text x="151" y="90">まるごと</text>
+    <text x="104" y="118">仮想化の層</text>
+    <text x="104" y="146">本体のOS</text>
+  </g>
+  <text x="104" y="172" font-size="9" text-anchor="middle" fill="var(--mechanism)">重い・起動が遅い</text>
+
+  <text x="336" y="20" font-size="10" fill="var(--place)">コンテナ：OSは共有</text>
+  <g stroke="var(--place)" stroke-width="1.5">
+    <rect x="246" y="28" width="86" height="26" rx="5" fill="var(--place-bg)"/>
+    <rect x="340" y="28" width="86" height="26" rx="5" fill="var(--place-bg)"/>
+    <rect x="246" y="58" width="86" height="22" rx="5" fill="var(--panel)"/>
+    <rect x="340" y="58" width="86" height="22" rx="5" fill="var(--panel)"/>
+    <rect x="246" y="84" width="180" height="24" rx="5" fill="var(--panel)"/>
+    <rect x="246" y="112" width="180" height="24" rx="5" fill="var(--panel)"/>
+  </g>
+  <g font-size="9" text-anchor="middle" fill="var(--ink-soft)">
+    <text x="289" y="45">アプリ</text><text x="383" y="45">アプリ</text>
+    <text x="289" y="73">必要な部品だけ</text><text x="383" y="73">必要な部品だけ</text>
+    <text x="336" y="100">コンテナの層</text>
+    <text x="336" y="128">本体のOS（1つ）</text>
+  </g>
+  <text x="336" y="154" font-size="9" text-anchor="middle" fill="var(--place)">軽い・すぐ起動する</text>
+
+  <text x="220" y="214" font-size="10" text-anchor="middle" fill="var(--ink-soft)">積む高さが違う。これが起動の速さと大きさの差になる</text>
+</svg>

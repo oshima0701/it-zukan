@@ -1,0 +1,131 @@
+---
+no: 25
+name: Linux
+reading: りなっくす
+type: place
+oneLine: 世界中のサーバーとスマホを動かしている、無料のOSの中心部分。
+surprise: >
+  公開時の投稿に「ただの趣味です。大きくて本格的なものにはなりません」と書かれています。
+  その趣味が、いま世界中のサーバーとスマホを動かしています。
+takeaway: >
+  Linux はOSの中心部分の名前です。その周りを誰がどう包むかで、机の上の道具にも、スマホにも、冷蔵庫にもなります。
+status:
+  difficulty: 3
+  popularity: 5
+  breadth: 5
+order: 250
+updated: 2026-10-26
+born: 1991
+creators:
+  - name: リーナス・トーバルズ
+    nameEn: Linus Torvalds
+    personId: linus-torvalds
+birthplace:
+  label: フィンランド・ヘルシンキ
+  lat: 60.17
+  lng: 24.94
+mascot:
+  name: Tux（タックス）
+  origin: ペンギン。公式サイトに画像があります
+officialUrl: https://www.kernel.org/
+aliases: [リナックス]
+related:
+  - slug: git
+    relation: descendant
+    note: これを作るために生まれた道具
+  - slug: docker
+    relation: partner
+    note: この上で動くしくみ
+sources:
+  - id: 1
+    title: Linux - Wikipedia
+    url: https://en.wikipedia.org/wiki/Linux
+    accessed: 2026-10-26
+  - id: 2
+    title: The Linux Kernel Archives（公式）
+    url: https://www.kernel.org/
+    accessed: 2026-10-26
+  - id: 3
+    title: Linus Torvalds - Wikipedia
+    url: https://en.wikipedia.org/wiki/Linus_Torvalds
+    accessed: 2026-10-26
+---
+
+{/* block: birth */}
+## 「ただの趣味です」から始まった
+
+1991年、フィンランドの大学生だったリーナス・トーバルズが、自作のOSについて掲示板に投稿しました。**趣味で作っている、大きくて本格的なものにはならない**、という控えめな書き出しでした<Cite n={1} />。
+
+当時、まともなOSは高価な商用製品か、学術用の限られたものしかありませんでした。学生が手元で試せるものが欲しかった、というのが出発点です<Cite n={3} />。
+
+その後、世界中の開発者が改良に参加し、いまでは世界のサーバーの大半、Androidのスマホ、家電、自動車の中で動いています<Cite n={1} />。「本格的なものにはならない」という予想は、これ以上ないほど外れました。
+
+{/* block: naming */}
+## 名前の由来：本人は別の名前にしたかった
+
+Linus（作者の名前）と Unix を掛け合わせた名前です<Cite n={1} />。
+
+本人は自分の名前を冠するのを気恥ずかしく思い、別の名前を考えていたと伝えられています<Cite n={1} />。ところが、公開の手伝いをしていた人が置き場のフォルダ名を linux にしてしまい、そのまま定着しました<Cite n={1} />。
+
+マスコットはペンギンの **Tux** です。ペンギンが選ばれた理由については、作者が動物園でペンギンにかまれた話などが語られていますが、説が分かれます。
+
+{/* block: analogy */}
+## たとえ話：エンジンと車体
+
+Linux という名前が正確に指しているのは、OSの**中心部分だけ**です。車でいえばエンジンです。
+
+エンジンだけでは走れません。車体、座席、ハンドル、計器が要ります。それらを組み合わせて1台の車として配っているのが、Ubuntu や Debian といった「配布版」です。
+
+だから、見た目がまるで違うものどうしが「どちらも Linux」ということが起きます。中心に積まれているエンジンが同じなのです。
+
+{/* block: figure */}
+## 中心は同じ、包み方が違う
+
+<Figure name="linux-distros" caption="同じ中心核をもとに、用途の違う配布版が作られます。机の上で使う版、サーバー用の版、スマホの版" />
+
+{/* block: skills */}
+## 最初に覚える3つ
+
+Windows しか使っていなくても、これらは目にします。
+
+| 書き方 | 意味 |
+|---|---|
+| `ls` | そこに何があるか見る |
+| `cd 名前` | 別の場所へ移る |
+| `sudo 命令` | 管理者の権限で実行する |
+
+3つめが曲者です。`sudo` を付けると何でもできてしまうので、ネットで拾った命令を考えずに `sudo` 付きで実行するのは危険です。
+
+{/* block: you */}
+## あなたとの関係
+
+Android のスマホを持っているなら、手の中で動いています。会社のファイルサーバーも、たいていは Linux です。
+
+Windows の中でも動かせます。WSL という仕組みを使えば、Windows を使いながら Linux の環境を同時に持てます。
+
+{/* block: internet */}
+## ネットでの扱われ方
+
+**「今年こそ Linux デスクトップの年」** という言い回しが、20年以上にわたって毎年繰り返されています。机の上のパソコンでも Linux が主流になる、という予想が当たらないことを自嘲するネタです。
+
+サーバーとスマホでは圧勝しているのに、机の上だけは取れていない。この対比が、ずっと笑いの種になっています。
+
+{/* block: misunderstanding */}
+## よくある誤解：無料だからサポートがない
+
+無料で配られていることと、支えがないことは別です。企業向けに有償で保守を提供する会社がいくつもあり、世界中の大企業がその契約で使っています。
+
+「誰も責任を取らないもの」ではなく、「誰でも中身を読めて、保守は選べるもの」と見たほうが実態に合います。
+
+{/* block: firststep */}
+## 今日5分でできること
+
+Windows で PowerShell を開いて `wsl --install` と打つと、Linux を入れる手順が始まります。管理者の権限が要ります。
+
+入れたくない場合は、配布元の[公式サイト](https://www.kernel.org/)を開いてみてください<Cite n={2} />。世界中のサーバーを動かしているものの配布元が、驚くほど素朴なページであることが分かります。
+
+{/* block: materials */}
+## 無料教材
+
+- [The Linux Kernel Archives](https://www.kernel.org/)（無料・英語）
+- [WSL のドキュメント - Microsoft Learn](https://learn.microsoft.com/ja-jp/windows/wsl/)（無料・日本語）
