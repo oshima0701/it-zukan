@@ -1,0 +1,45 @@
+---
+// 文字を流すパイプと、モノを流すパイプの違い。
+---
+<svg viewBox="0 0 440 240" role="img" aria-label="他のシェルは文字列を次の命令に渡すのに対し、PowerShellは表のようなデータそのものを渡すという比較図">
+  <text x="14" y="22" font-size="11" fill="var(--ink-soft)">ほかのシェル：文字を渡す</text>
+  <rect x="14" y="32" width="110" height="44" rx="8" fill="var(--panel)" stroke="var(--line)" stroke-width="2"/>
+  <text x="69" y="59" font-size="11" text-anchor="middle" fill="var(--ink)">命令A</text>
+  <path d="M128 54 L168 54" stroke="var(--ink-soft)" stroke-width="2" marker-end="url(#p-arrow)"/>
+  <rect x="172" y="32" width="110" height="44" rx="8" fill="var(--wash, var(--panel))" stroke="var(--line)" stroke-width="1.5" stroke-dasharray="4 4"/>
+  <text x="227" y="52" font-size="10" text-anchor="middle" fill="var(--ink-soft)">"name  size"</text>
+  <text x="227" y="67" font-size="10" text-anchor="middle" fill="var(--ink-soft)">"a.txt   12"</text>
+  <path d="M286 54 L326 54" stroke="var(--ink-soft)" stroke-width="2" marker-end="url(#p-arrow)"/>
+  <rect x="330" y="32" width="96" height="44" rx="8" fill="var(--panel)" stroke="var(--line)" stroke-width="2"/>
+  <text x="378" y="53" font-size="11" text-anchor="middle" fill="var(--ink)">命令B</text>
+  <text x="378" y="68" font-size="9" text-anchor="middle" fill="var(--ink-soft)">切り出し直す</text>
+
+  <text x="14" y="128" font-size="11" fill="var(--tool)">PowerShell：データそのものを渡す</text>
+  <rect x="14" y="138" width="110" height="60" rx="8" fill="var(--tool-bg)" stroke="var(--tool)" stroke-width="2"/>
+  <text x="69" y="173" font-size="11" text-anchor="middle" fill="var(--tool)">命令A</text>
+  <path d="M128 168 L168 168" stroke="var(--tool)" stroke-width="2" marker-end="url(#p-arrow-c)"/>
+
+  <g>
+    <rect x="172" y="138" width="110" height="60" rx="8" fill="var(--panel)" stroke="var(--tool)" stroke-width="2"/>
+    <line x1="172" y1="158" x2="282" y2="158" stroke="var(--tool)" stroke-width="1.5"/>
+    <line x1="227" y1="138" x2="227" y2="198" stroke="var(--line)" stroke-width="1"/>
+    <text x="199" y="152" font-size="9" text-anchor="middle" fill="var(--ink-soft)">名前</text>
+    <text x="255" y="152" font-size="9" text-anchor="middle" fill="var(--ink-soft)">大きさ</text>
+    <text x="199" y="176" font-size="9" text-anchor="middle" fill="var(--ink)">a.txt</text>
+    <text x="255" y="176" font-size="9" text-anchor="middle" fill="var(--ink)">12</text>
+  </g>
+
+  <path d="M286 168 L326 168" stroke="var(--tool)" stroke-width="2" marker-end="url(#p-arrow-c)"/>
+  <rect x="330" y="138" width="96" height="60" rx="8" fill="var(--tool-bg)" stroke="var(--tool)" stroke-width="2"/>
+  <text x="378" y="165" font-size="11" text-anchor="middle" fill="var(--tool)">命令B</text>
+  <text x="378" y="180" font-size="9" text-anchor="middle" fill="var(--ink-soft)">列の名前で選べる</text>
+
+  <defs>
+    <marker id="p-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--ink-soft)"/>
+    </marker>
+    <marker id="p-arrow-c" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--tool)"/>
+    </marker>
+  </defs>
+</svg>

@@ -1,0 +1,115 @@
+---
+no: 2
+name: コマンドプロンプト
+reading: こまんどぷろんぷと
+type: tool
+oneLine: Windowsに昔から入っている、文字で命令するための道具。
+surprise: >
+  「DOSの画面」と呼ばれることがありますが、いまのWindowsに入っているものは
+  MS-DOSのものではありません。見た目が似ているだけで、別の系統から来ています。
+takeaway: >
+  コマンドプロンプトは「昔からあるので壊せないもの」です。新しく覚えるなら PowerShell のほうです。
+status:
+  difficulty: 2
+  popularity: 3
+  breadth: 2
+order: 20
+updated: 2026-10-26
+born: 1993
+bornNote: Windows NT 3.1 とともに登場
+creators:
+  - name: テリーズ・ストーウェル
+    nameEn: Therese Stowell
+birthplace:
+  label: アメリカ・ワシントン州（マイクロソフト）
+  lat: 47.64
+  lng: -122.13
+mascot:
+  name: なし
+officialUrl: https://learn.microsoft.com/ja-jp/windows-server/administration/windows-commands/cmd
+aliases: [cmd, cmd.exe, DOS窓]
+related:
+  - slug: powershell
+    relation: descendant
+    note: Windowsの新しいほうの窓口
+  - slug: terminal
+    relation: partner
+    note: これを映す入れ物
+sources:
+  - id: 1
+    title: Cmd.exe - Wikipedia
+    url: https://en.wikipedia.org/wiki/Cmd.exe
+    accessed: 2026-10-26
+  - id: 2
+    title: cmd コマンド リファレンス - Microsoft Learn
+    url: https://learn.microsoft.com/ja-jp/windows-server/administration/windows-commands/cmd
+    accessed: 2026-10-26
+---
+
+{/* block: birth */}
+## 「DOSの画面」と呼ばれるのはなぜ間違いなのか？
+
+1980年代のパソコンのOSはMS-DOSで、その窓口は `COMMAND.COM` というプログラムでした。黒い画面に文字を打つ、あの形です。
+
+1993年、マイクロソフトは Windows NT という、MS-DOSとは作りの違う新しいWindowsを出しました。そこに載せられた窓口が `cmd.exe`、つまりコマンドプロンプトです<Cite n={1} />。
+
+つまり `COMMAND.COM` と `cmd.exe` は、親子ではなく別系統です。やることが同じなので見た目と使い勝手を似せてあるだけで、中身は作り直されています<Cite n={1} />。いまのWindowsに入っているのは `cmd.exe` のほうで、MS-DOSはもうどこにもありません。「DOSの画面」という呼び名だけが、30年以上生き残っています。
+
+{/* block: naming */}
+## 名前の由来：プロンプトとは「うながすもの」
+
+プロンプト（prompt）は「うながす」という意味です。演劇で、せりふを忘れた役者にそっと台本を教える係をプロンプターと呼ぶのと同じ語です。
+
+画面に出ている `C:\Users\名前>` という表示が、そのプロンプトです。「いまここにいます。次の命令をどうぞ」と、あなたをうながしています。だからコマンドプロンプト、つまり「命令をうながすもの」です。
+
+ファイル名のほうの `cmd` は command（命令）の略です<Cite n={2} />。
+
+{/* block: analogy */}
+## たとえ話：建て替えたのに看板は昔のまま
+
+駅前の店が建て替わって、中身も店員も新しくなったのに、看板だけ昔のものを使い続けている。コマンドプロンプトはそういう状態です。
+
+利用者が困らないように、わざと古い使い勝手を残してあります。昔の手順書に書かれた命令が、いまのWindowsでもそのまま動くのはそのためです。親切である反面、「新しいもの」と「古いままのもの」が同居することになりました。
+
+{/* block: figure */}
+## 系譜を見ると分かること
+
+<Figure name="cmd-lineage" caption="MS-DOSのCOMMAND.COMと、Windows NTのcmd.exeは別系統です。見た目が似ているので、同じものだと思われてきました" />
+
+{/* block: skills */}
+## 最初に覚える3つ
+
+| やりたいこと | 書き方 |
+|---|---|
+| そこに何があるか見る | `dir` |
+| 別の場所へ移る | `cd 名前` |
+| 命令の説明を読む | `命令名 /?` |
+
+最後の `/?` は覚えておくと役に立ちます。たとえば `dir /?` と打てば、`dir` に付けられる指定が全部出てきます。ネットで調べる前に、まず本人に聞けます<Cite n={2} />。
+
+{/* block: you */}
+## あなたとの関係
+
+会社で配られた手順書に「コマンドプロンプトを管理者として実行し、次を入力してください」と書かれていたことはありませんか。あれです。
+
+プリンタが反応しない、ネットワークがつながらない、といったときの調べ方として、いまも現役で手順書に載り続けています。新しく覚えるならPowerShellのほうですが、既存の手順書を読むために、この存在を知っておく必要があります。
+
+{/* block: misunderstanding */}
+## よくある誤解：もう消してもいいのでは？
+
+消せません。そして消すべきでもありません。
+
+世の中には、cmd.exe が動くことを前提にした古い仕組みが大量に残っています。業務で使っているソフトの中にも、裏で呼び出しているものがあります。マイクロソフトがこれを残し続けているのは、愛着ではなく、壊すと困る人が多すぎるからです。
+
+{/* block: firststep */}
+## 今日5分でできること
+
+スタートメニューで `cmd` と打って開き、`dir` と打ってみてください。いるフォルダの中身が一覧で出ます。
+
+次に `dir /?` と打ってみてください。説明が画面いっぱいに流れます。読み切らなくて構いません。「命令は自分の説明書を持っている」とだけ覚えてください。
+
+{/* block: materials */}
+## 無料教材
+
+- [Windows コマンド一覧 - Microsoft Learn](https://learn.microsoft.com/ja-jp/windows-server/administration/windows-commands/windows-commands)（無料・日本語）
+- [cmd コマンド リファレンス - Microsoft Learn](https://learn.microsoft.com/ja-jp/windows-server/administration/windows-commands/cmd)（無料・日本語）

@@ -77,3 +77,16 @@ img { max-width: 100%; height: auto; }
 .prose table { border-collapse: collapse; width: 100%; font-size: .9rem; margin: 1.2rem 0; display: block; overflow-x: auto; }
 .prose th, .prose td { text-align: left; padding: .45rem .7rem; border-bottom: 1px solid var(--line); }
 .prose th { color: var(--ink-soft); font-weight: 700; white-space: nowrap; }
+
+/* 図鑑の中で用語から用語へ飛べるようにした自動リンク。
+   本文のふつうのリンクと見分けがつくよう、点線の下線にしている。
+   色は変えない（強調は「今日のひとこと」1か所だけという決まりのため）。 */
+.zukan-link {
+  text-decoration: none;
+  border-bottom: 1px dotted var(--ink-soft);
+  color: inherit;
+}
+.zukan-link:hover,
+.zukan-link:focus-visible {
+  border-bottom-style: solid;
+}

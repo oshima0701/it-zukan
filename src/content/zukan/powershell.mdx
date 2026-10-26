@@ -1,0 +1,131 @@
+---
+no: 3
+name: PowerShell
+reading: ぱわーしぇる
+type: tool
+oneLine: いまのWindowsの標準の窓口。命令が動詞と名詞の組で決まっている。
+surprise: >
+  PowerShellの命令が「Get-ChildItem」のように動詞と名詞でできているのは、
+  見た目の好みではありません。使ってよい動詞は公式に一覧で決められていて、
+  勝手な動詞を使うと警告が出ます。
+takeaway: >
+  PowerShellが他と違うのは、命令と命令のあいだを流れるのが文字ではなく、表のようなデータそのものだという点です。
+status:
+  difficulty: 3
+  popularity: 4
+  breadth: 3
+order: 30
+updated: 2026-10-26
+born: 2006
+bornNote: 構想を書いた文書は2002年
+creators:
+  - name: ジェフリー・スノーバー
+    nameEn: Jeffrey Snover
+birthplace:
+  label: アメリカ・ワシントン州（マイクロソフト）
+  lat: 47.64
+  lng: -122.13
+mascot:
+  name: なし
+officialUrl: https://learn.microsoft.com/ja-jp/powershell/
+aliases: [ぱわしぇ, pwsh]
+related:
+  - slug: cmd
+    relation: ancestor
+    note: Windowsの古いほうの窓口
+  - slug: terminal
+    relation: partner
+    note: これを映す入れ物
+sources:
+  - id: 1
+    title: PowerShell とは - Microsoft Learn
+    url: https://learn.microsoft.com/ja-jp/powershell/scripting/overview
+    accessed: 2026-10-26
+  - id: 2
+    title: 承認されている動詞 - Microsoft Learn
+    url: https://learn.microsoft.com/ja-jp/powershell/scripting/developer/cmdlet/approved-verbs-for-windows-powershell-commands
+    accessed: 2026-10-26
+  - id: 3
+    title: PowerShell - Wikipedia
+    url: https://en.wikipedia.org/wiki/PowerShell
+    accessed: 2026-10-26
+  - id: 4
+    title: Jeffrey Snover - Wikipedia
+    url: https://en.wikipedia.org/wiki/Jeffrey_Snover
+    accessed: 2026-10-26
+---
+
+{/* block: birth */}
+## なぜWindowsに新しい窓口が必要だったのか？
+
+2002年、マイクロソフトのジェフリー・スノーバーが1本の文書を書きました。「Monad Manifesto（モナド宣言）」と呼ばれる構想です<Cite n={3} />。
+
+彼の見立てはこうでした。Unix系のOSでは、設定も記録もほとんどが文字のファイルなので、文字を切り貼りする道具が強い。ところがWindowsでは、必要な情報は文字ではなく、形の決まったデータとして持たれている。だからWindowsに文字向けの道具を真似て持ってきても、使いにくいだけだ<Cite n={3} />。
+
+答えは、文字ではなくデータそのものを受け渡しするシェルを作ることでした。開発中の名前は「Monad」で、2006年11月に Windows PowerShell として公開されました<Cite n={3} />。2016年には他のOSでも動く形になり、ソースコードも公開されています<Cite n={1} />。
+
+なお、この構想が社内ですんなり受け入れられたわけではないことも記録に残っています<Cite n={4} />。
+
+{/* block: naming */}
+## 名前の由来：シェルに「力」を足した
+
+power（力）と shell（殻）です。シェルという言葉がOSの中心を包む外側を指すことは、ターミナルのページで触れたとおりです。
+
+おもしろいのは、むしろ命令の名前のほうの決まりです。PowerShellの命令は `Get-ChildItem`（取る - 子の項目）のように、必ず「動詞 - 名詞」の形をしています。そして使ってよい動詞は公式に一覧で決められています<Cite n={2} />。
+
+たとえば「取得する」は `Get` で、`Fetch` や `Retrieve` は使いません<Cite n={2} />。「消す」は `Remove`、「作る」は `New` です。この統一のおかげで、初めて見る命令でも半分は意味が読めます。`Stop-Service` が何をするかは、英語が少し読めれば分かります。
+
+{/* block: analogy */}
+## たとえ話：切り分けた料理を渡すか、皿ごと渡すか
+
+ほかのシェルでは、前の命令の結果が長い1枚の紙として次の命令に渡されます。受け取った側は、その紙から「3列目の数字」を自分で切り出さなければなりません。紙の書式が少し変わると、切り出し方も壊れます。
+
+PowerShellでは、表そのものが次の命令に渡されます。受け取った側は「大きさ、という名前の列」と指定するだけで済みます。並び順が変わっても、列の名前が同じなら壊れません。
+
+これが、PowerShellの命令が少し長くて読みにくい代わりに得ているものです。
+
+{/* block: figure */}
+## 文字を渡すか、データを渡すか
+
+<Figure name="powershell-objects" caption="上は文字を渡す形。受け取った側が切り出し直します。下はデータそのものを渡す形。列の名前で選べます" />
+
+{/* block: skills */}
+## 最初に覚える3つ
+
+| やりたいこと | 書き方 |
+|---|---|
+| そこに何があるか見る | `Get-ChildItem` |
+| 命令の説明を読む | `Get-Help 命令名` |
+| 使える命令を探す | `Get-Command *service*` |
+
+3つめが効きます。動詞と名詞の決まりがあるので、「サービス」に関する命令を探したいなら名前で検索できます。覚えるのではなく、探せばよい作りになっています<Cite n={1} />。
+
+なお `ls` や `dir` と打っても動きますが、これは `Get-ChildItem` の別名として用意されているものです。見た目が同じでも、返ってくるのは文字ではなくデータです。
+
+{/* block: you */}
+## あなたとの関係
+
+Windows 10 以降には最初から入っています。スタートメニューで「PowerShell」と打てば出てきます。
+
+会社のパソコンの設定を一括で変える、何百個のファイルの名前を規則的に付け替える、毎朝決まった時刻に何かを動かす。こうした「手でやると日が暮れる作業」を任せる相手として、Windowsではこれが標準です。
+
+{/* block: misunderstanding */}
+## よくある誤解：`ls` が使えるから Mac と同じ
+
+同じではありません。`ls` は `Get-ChildItem` に付けられた別名で、返ってくるものが違います。
+
+Mac や Linux の `ls` が返すのは文字です。PowerShellの `ls` が返すのは、名前・大きさ・更新日時といった項目を持ったデータです。だから `ls | ...` の先に書ける命令も、両者で違ってきます。慣れた書き方がそのまま動くので、違いに気づかないまま進んで、あとで混乱する人が多いところです。
+
+{/* block: firststep */}
+## 今日5分でできること
+
+PowerShellを開いて `Get-Command -Verb Get` と打ってみてください。`Get` で始まる命令が、ずらりと一覧で出ます。
+
+数の多さに驚くと思いますが、覚える必要はありません。「こうやって探せる」ということだけが、ここでの収穫です。
+
+{/* block: materials */}
+## 無料教材
+
+- [PowerShell のドキュメント - Microsoft Learn](https://learn.microsoft.com/ja-jp/powershell/)（無料・日本語）
+- [PowerShell とは - Microsoft Learn](https://learn.microsoft.com/ja-jp/powershell/scripting/overview)（無料・日本語）
+- [承認されている動詞の一覧 - Microsoft Learn](https://learn.microsoft.com/ja-jp/powershell/scripting/developer/cmdlet/approved-verbs-for-windows-powershell-commands)（無料・日本語）
