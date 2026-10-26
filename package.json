@@ -6,8 +6,8 @@
   "scripts": {
     "dev": "astro dev",
     "check": "node scripts/check-pages.mjs",
-    "build": "npm run check && astro build",
-    "build:only": "astro build",
+    "build": "npm run check && astro build && node scripts/make-standalone.mjs",
+    "build:only": "astro build && node scripts/make-standalone.mjs",
     "preview": "astro preview"
   },
   "dependencies": {

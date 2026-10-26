@@ -1,81 +1,209 @@
 ---
-// 町の地図。区画はタイプと同じ名前。住人（項目）は frontmatter の type から
-// 自動で並ぶので、.mdx を1つ足せば地図にも現れる。
-import { TYPES, TYPE_ORDER, type TypeKey } from '../config';
+// 町の地図。区画はタイプと同じ名前（言語／ツール／AI／場所／しくみ／データ）で、
+// 区画だけの別名は付けない。住人（項目）は frontmatter の type から自動で並ぶので、
+// .mdx を1つ足せば地図にも現れる。区画の高さも住人の数から計算する。
+// 地図らしさは、道・土地の模様・木立・広場といった「形」で出し、言葉は足さない。
+import { TYPES, type TypeKey } from '../config';
+import { TYPE_ICONS } from '../data/typeIcons';
 
 interface Props { items: { slug: string; name: string; type: TypeKey }[] }
 const { items } = Astro.props;
 const base = import.meta.env.BASE_URL;
 
-// 区画の位置。四隅に大きい4つ、中段の左右に横長の2つ。
-const ZONES: Record<TypeKey, { x: number; y: number; w: number; h: number; cols: number }> = {
-  language:  { x: 30,  y: 30,  w: 350, h: 210, cols: 2 },
-  tool:      { x: 440, y: 30,  w: 350, h: 210, cols: 2 },
-  place:     { x: 30,  y: 262, w: 350, h: 86,  cols: 2 },
-  data:      { x: 440, y: 262, w: 350, h: 86,  cols: 2 },
-  ai:        { x: 30,  y: 370, w: 350, h: 210, cols: 2 },
-  mechanism: { x: 440, y: 370, w: 350, h: 210, cols: 2 },
+// ---- 配置の決まり ----
+// 四隅に言語／ツール／AI／しくみ、中段の左右に場所／データ、中央にスタート広場。
+const ROWS: [TypeKey, TypeKey][] = [
+  ['language', 'tool'],
+  ['place', 'data'],
+  ['ai', 'mechanism'],
+];
+const W = 820;
+const ZONE_W = 320;
+const LEFT_X = 24;
+const RIGHT_X = W - 24 - ZONE_W;
+const INNER = ZONE_W - 32;       // 区画の内側（住人を並べる幅）
+const FS = 12.5;                 // 住人の文字の大きさ
+const PILL_H = 24;
+const GAP_X = 8;
+const GAP_Y = 8;
+const HEAD = 50;                 // 区画の上部（名前札と説明）
+const ROAD_GAP = 48;             // 区画の段と段のあいだ（道が通る）
+const TOP = 40;
+
+// 文字の幅の見積り（全角は1em、半角は約0.58em）
+const textW = (s: string) =>
+  [...s].reduce((n, ch) => n + (ch.charCodeAt(0) < 0x80 ? 0.58 : 1), 0) * FS + 2;
+
+function flow(members: { slug: string; name: string }[]) {
+  let cx = 0;
+  let row = 0;
+  const placed = members.map((m) => {
+    const w = Math.ceil(24 + textW(m.name) + 10);
+    if (cx > 0 && cx + w > INNER) { row++; cx = 0; }
+    const p = { ...m, x: cx, row, w };
+    cx += w + GAP_X;
+    return p;
+  });
+  const rows = members.length === 0 ? 1 : row + 1;
+  return { placed, h: HEAD + rows * (PILL_H + GAP_Y) - GAP_Y + 16 };
+}
+
+const zones: Record<string, any> = {};
+for (const pair of ROWS) {
+  for (const key of pair) {
+    zones[key] = flow(items.filter((i) => i.type === key));
+  }
+}
+
+const rowH = ROWS.map((pair) => Math.max(96, ...pair.map((k) => zones[k].h)));
+const rowY: number[] = [];
+rowH.reduce((y, h, i) => { rowY[i] = y; return y + h + ROAD_GAP; }, TOP);
+const H = rowY[2] + rowH[2] + 36;
+
+const placedZones = ROWS.flatMap((pair, r) =>
+  pair.map((key, c) => {
+    const t = TYPES[key];
+    const x = c === 0 ? LEFT_X : RIGHT_X;
+    const tabW = Math.ceil(46 + [...t.label].reduce((n, ch) => n + (ch.charCodeAt(0) < 0x80 ? 0.6 : 1), 0) * 14);
+    return {
+      key, x, y: rowY[r], w: ZONE_W, h: rowH[r],
+      label: t.label, blurb: t.blurb, tabW,
+      members: zones[key].placed as { slug: string; name: string; x: number; row: number; w: number }[],
+    };
+  })
+);
+
+const roadY = [rowY[1] - ROAD_GAP / 2, rowY[2] - ROAD_GAP / 2];
+const plazaY = rowY[1] + rowH[1] / 2;
+
+// 木立（飾り）。中央の道の両側にだけ置く
+const trees = [
+  [372, 62, 7], [386, 84, 5], [446, 72, 6], [434, 98, 4],
+  [374, H - 70, 6], [388, H - 50, 4.5], [444, H - 62, 7], [432, H - 40, 4],
+];
+
+// 土地の模様。タイプごとに違う線で塗り分ける（色だけに頼らないための補助）
+const TEXTURE: Record<string, string> = {
+  language: 'M0 5H16 M0 13H16',
+  tool: 'M-2 18L18 -2 M-2 26L26 -2',
+  ai: 'M4 4h.01 M12 12h.01',
+  place: 'M8 5v6 M5 8h6',
+  mechanism: 'M3 3h3v3h-3z M11 11h3v3h-3z',
+  data: 'M0 8q4-5 8 0t8 0',
 };
-
-const grouped = TYPE_ORDER.map((t) => ({
-  key: t,
-  label: TYPES[t].label,
-  blurb: TYPES[t].blurb,
-  zone: ZONES[t],
-  members: items.filter((i) => i.type === t),
-}));
+const roadPaths = [`M410 8 V${H - 8}`, ...roadY.map((y) => `M8 ${y} H${W - 8}`)];
 ---
-<div class="mapwrap">
-  <svg viewBox="0 0 820 610" role="img" aria-label="技術をタイプごとの区画に並べた地図">
-    <rect x="0" y="0" width="820" height="610" rx="10" fill="var(--map-ground)" />
+<div class="mapwrap" role="region" tabindex="0" aria-label="町の地図（横にスクロールできます）">
+  <svg viewBox={`0 0 ${W} ${H}`} role="group" aria-label="技術をタイプごとの区画に並べた地図">
+    <defs>
+      <pattern id="map-grid" width="32" height="32" patternUnits="userSpaceOnUse">
+        <path d="M32 0H0V32" class="grid-line" />
+      </pattern>
+      {Object.entries(TEXTURE).map(([key, d]) => (
+        <pattern id={`tex-${key}`} width="16" height="16" patternUnits="userSpaceOnUse">
+          <path d={d} class="tex-line" style={`stroke: var(--${key});`} />
+        </pattern>
+      ))}
+    </defs>
 
-    <g stroke="var(--map-road)" stroke-width="26" stroke-linecap="round">
-      <path d="M410 55 L410 555" />
-      <path d="M80 305 L740 305" />
+    <g aria-hidden="true">
+      <rect x="0" y="0" width={W} height={H} rx="16" class="ground" />
+      <rect x="0" y="0" width={W} height={H} rx="16" fill="url(#map-grid)" />
+      <rect x="8" y="8" width={W - 16} height={H - 16} rx="11" class="frame" />
+
+      {/* 道。縁取り → 路面 → 中央の破線 */}
+      <g class="road-edge">{roadPaths.map((d) => <path d={d} />)}</g>
+      <g class="road-surface">{roadPaths.map((d) => <path d={d} />)}</g>
+      <g class="road-line">{roadPaths.map((d) => <path d={d} />)}</g>
+
+      {trees.map(([x, y, r]) => <circle cx={x} cy={y} r={r} class="tree" />)}
     </g>
 
-    <a href={`${base}zukan/`}>
-      <circle cx="410" cy="305" r="56" fill="var(--panel)" stroke="var(--line)" stroke-width="2" />
-      <text x="410" y="300" text-anchor="middle" class="z-label" fill="var(--ink)">スタート</text>
-      <text x="410" y="319" text-anchor="middle" class="z-blurb" fill="var(--ink-soft)">はじめての人はここから</text>
-    </a>
+    {placedZones.map((z) => (
+      <g class="zone-g" style={`--c: var(--${z.key}); --cbg: var(--${z.key}-bg);`}>
+        <rect x={z.x} y={z.y} width={z.w} height={z.h} rx="14" class="land" />
+        <rect x={z.x} y={z.y} width={z.w} height={z.h} rx="14" fill={`url(#tex-${z.key})`} aria-hidden="true" />
 
-    {grouped.map((g) => (
-      <g>
-        <rect x={g.zone.x} y={g.zone.y} width={g.zone.w} height={g.zone.h} rx="12"
-              fill={`var(--${g.key}-bg)`} stroke={`var(--${g.key})`} stroke-width="2" />
-        <text x={g.zone.x + 18} y={g.zone.y + 28} class="z-label" fill={`var(--${g.key})`}>{g.label}</text>
-        <text x={g.zone.x + 18} y={g.zone.y + 46} class="z-blurb" fill="var(--ink-soft)">{g.blurb}</text>
-        {g.members.map((m, idx) => {
-          const col = idx % g.zone.cols;
-          const row = Math.floor(idx / g.zone.cols);
-          const x = g.zone.x + 18 + col * (g.zone.w - 36) / g.zone.cols;
-          const y = g.zone.y + 70 + row * 19;
-          return (
-            <a href={`${base}zukan/${m.slug}/`} data-slug={m.slug}>
-              <text x={x} y={y} class="member" fill="var(--ink)">{m.name}</text>
-            </a>
-          );
-        })}
-        {g.members.length === 0 && (
-          <text x={g.zone.x + 18} y={g.zone.y + 72} class="member" fill="var(--ink-soft)">（まだ住人がいません）</text>
+        {/* 名前札：色・絵記号・文字の3つでタイプを示す */}
+        <rect x={z.x + 14} y={z.y - 13} width={z.tabW} height="27" rx="13.5" class="tab" />
+        <g transform={`translate(${z.x + 24} ${z.y - 7}) scale(.62)`} class="tab-icon" aria-hidden="true">
+          {TYPE_ICONS[z.key].map((d) => <path d={d} />)}
+        </g>
+        <text x={z.x + 24 + 22} y={z.y + 6} class="z-label">{z.label}</text>
+        <text x={z.x + 16} y={z.y + 36} class="z-blurb">{z.blurb}</text>
+
+        {z.members.map((m) => (
+          <a href={`${base}zukan/${m.slug}/`} data-slug={m.slug}>
+            <rect x={z.x + 16 + m.x} y={z.y + HEAD + m.row * (PILL_H + GAP_Y)}
+                  width={m.w} height={PILL_H} rx={PILL_H / 2} class="pill" />
+            <circle cx={z.x + 16 + m.x + 12} cy={z.y + HEAD + m.row * (PILL_H + GAP_Y) + PILL_H / 2} r="4" class="pin" />
+            <text x={z.x + 16 + m.x + 22} y={z.y + HEAD + m.row * (PILL_H + GAP_Y) + 16.5} class="member">{m.name}</text>
+          </a>
+        ))}
+        {z.members.length === 0 && (
+          <text x={z.x + 16} y={z.y + HEAD + 16} class="empty">（まだ住人がいません）</text>
         )}
       </g>
     ))}
+
+    {/* 中央の広場 */}
+    <a href={`${base}zukan/`} class="plaza">
+      <circle cx="410" cy={plazaY} r="62" class="plaza-edge" />
+      <circle cx="410" cy={plazaY} r="55" class="plaza-body" />
+      <circle cx="410" cy={plazaY} r="49" class="plaza-ring" />
+      <g class="flag" aria-hidden="true">
+        <path d={`M404 ${plazaY - 38} V${plazaY - 16}`} />
+        <path d={`M404 ${plazaY - 38} h16 l-4 6 4 6 h-16`} />
+      </g>
+      <text x="410" y={plazaY + 6} text-anchor="middle" class="p-label">スタート</text>
+      <text x="410" y={plazaY + 23} text-anchor="middle" class="p-blurb">はじめての人は</text>
+      <text x="410" y={plazaY + 36} text-anchor="middle" class="p-blurb">ここから</text>
+    </a>
   </svg>
 </div>
 
 <style>
   .mapwrap {
-    background: var(--panel); border: 1px solid var(--line); border-radius: 14px;
-    box-shadow: var(--shadow); padding: .6rem; overflow-x: auto;
+    background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius-l);
+    box-shadow: var(--shadow); padding: .5rem; overflow-x: auto;
   }
-  svg { display: block; width: 100%; min-width: 560px; height: auto; }
-  .z-label { font-weight: 700; font-size: 15px; }
-  .z-blurb { font-size: 11px; }
-  .member { font-size: 12px; }
-  a { text-decoration: none; }
+  svg { display: block; width: 100%; min-width: 720px; height: auto; }
+
+  .ground { fill: var(--map-ground); }
+  .grid-line { fill: none; stroke: var(--map-grid); stroke-width: 1; }
+  .frame { fill: none; stroke: var(--map-edge); stroke-width: 1.5; stroke-dasharray: 3 5; }
+  .tree { fill: var(--map-mark); }
+
+  .road-edge path { stroke: var(--map-edge); stroke-width: 30; fill: none; }
+  .road-surface path { stroke: var(--map-road); stroke-width: 25; fill: none; }
+  .road-line path { stroke: var(--map-edge); stroke-width: 1.5; stroke-dasharray: 7 8; fill: none; }
+
+  .land { fill: var(--cbg); stroke: var(--c); stroke-width: 1.5; }
+  .tex-line { fill: none; stroke-opacity: .15; stroke-width: 1.1; stroke-linecap: round; }
+  .tab { fill: var(--c); }
+  .tab-icon { fill: none; stroke: var(--on-c); stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+  .z-label { font-size: 15px; font-weight: 700; fill: var(--on-c); }
+  .z-blurb { font-size: 11.5px; fill: var(--ink-soft); }
+  .empty { font-size: 12px; fill: var(--ink-soft); }
+
+  a { text-decoration: none; cursor: pointer; }
+  .pill { fill: var(--panel); stroke: var(--c); stroke-width: 1; transition: stroke-width .12s ease; }
+  .pin { fill: var(--panel); stroke: var(--c); stroke-width: 1.5; }
+  .member { font-size: 12.5px; fill: var(--ink); }
+  a:hover .pill, a:focus-visible .pill { stroke-width: 2.2; }
   a:hover .member { text-decoration: underline; }
-  /* 読み終えた項目には地図上でも印を付ける */
+  a:focus-visible { outline: none; }
+  a:focus-visible .pill { stroke: var(--ink); }
+  /* 読み終えた項目は、点を塗りつぶし、文字も太くする（スクリプトが data-read を付ける） */
+  a[data-read="1"] .pin { fill: var(--c); }
   a[data-read="1"] .member { font-weight: 700; }
+
+  .plaza-edge { fill: var(--map-edge); }
+  .plaza-body { fill: var(--panel); }
+  .plaza-ring { fill: none; stroke: var(--line-strong); stroke-width: 1; stroke-dasharray: 3 4; }
+  .flag path { fill: none; stroke: var(--ink); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .p-label { font-size: 16px; font-weight: 700; fill: var(--ink); }
+  .p-blurb { font-size: 10.5px; fill: var(--ink-soft); }
+  .plaza:hover .plaza-body { fill: var(--panel-2); }
+  .plaza:focus-visible .plaza-ring { stroke: var(--ink); stroke-dasharray: none; stroke-width: 2; }
 </style>

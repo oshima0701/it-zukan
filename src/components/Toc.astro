@@ -1,5 +1,6 @@
 ---
-// PCだけ出る目次。見出し（H2）から自動で作る。スマホでは折りたたみ。
+// 目次。見出し（H2）から自動で作る。スマホでは折りたたみ、PC（900px〜）では常に開いて
+// 画面の横に付いてくる。いま読んでいる節には、色ではなく線と太さで印を付ける。
 interface Props { headings: { depth: number; slug: string; text: string }[] }
 const { headings } = Astro.props;
 const items = headings.filter((h) => h.depth === 2);
@@ -16,30 +17,61 @@ const items = headings.filter((h) => h.depth === 2);
 )}
 
 <style>
-  .toc { font-size: .84rem; }
-  summary { cursor: pointer; color: var(--ink-soft); padding: .4rem 0; }
-  ol { margin: .4rem 0 0; padding-left: 1.2rem; display: grid; gap: .35rem; }
-  a { color: var(--ink-soft); text-decoration: none; }
-  a:hover { color: var(--ink); text-decoration: underline; }
+  .toc {
+    font-size: .84rem; line-height: 1.6;
+    background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius-m);
+    padding: .2rem 1rem;
+  }
+  summary { cursor: pointer; color: var(--ink-soft); padding: .55rem 0; }
+  ol { margin: 0; padding: 0 0 .6rem; list-style: none; display: grid; gap: .1rem; counter-reset: toc; }
+  li { counter-increment: toc; }
+  a {
+    display: block; padding: .3rem 0 .3rem .7rem; color: var(--ink-soft); text-decoration: none;
+    border-left: 2px solid var(--line);
+  }
+  a::before { content: counter(toc) ". "; font-variant-numeric: tabular-nums; }
+  a:hover { color: var(--ink); border-left-color: var(--line-strong); }
+  a[aria-current="true"] { color: var(--ink); font-weight: 700; border-left-color: var(--ink); }
 
   @media (min-width: 900px) {
     .toc {
-      position: sticky; top: 1.5rem;
-      border-left: 2px solid var(--line); padding-left: 1rem;
+      position: sticky; top: 1.2rem; max-height: calc(100vh - 2.4rem); overflow-y: auto;
+      background: none; border: 0; border-radius: 0; padding: 0;
     }
-    summary { list-style: none; cursor: default; font-weight: 700; color: var(--ink); }
+    summary { list-style: none; cursor: default; font-weight: 700; color: var(--ink); padding: .2rem 0 .5rem; }
     summary::-webkit-details-marker { display: none; }
   }
 </style>
 
 <script is:inline>
-  // PC幅では常に開いておく（折りたたみはスマホのため）
   (function () {
     var d = document.querySelector('.toc details');
     if (!d) return;
+
+    // PC幅では常に開いておく（折りたたみはスマホのため）
     var mq = window.matchMedia('(min-width: 900px)');
     function sync() { if (mq.matches) d.open = true; }
     sync();
     mq.addEventListener('change', sync);
+
+    // いま読んでいる節に aria-current を付ける（画面の上から3割より上に出ている最後の見出し）
+    var links = Array.prototype.slice.call(d.querySelectorAll('a[href^="#"]'));
+    var heads = links.map(function (a) {
+      return document.getElementById(decodeURIComponent(a.getAttribute('href').slice(1)));
+    });
+    var ticking = false;
+    function mark() {
+      ticking = false;
+      var line = window.innerHeight * 0.3;
+      var cur = -1;
+      heads.forEach(function (h, i) { if (h && h.getBoundingClientRect().top <= line) cur = i; });
+      links.forEach(function (a, i) {
+        if (i === cur) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current');
+      });
+    }
+    function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(mark); } }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    mark();
   })();
 </script>

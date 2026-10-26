@@ -1,12 +1,22 @@
 ---
 import '../styles/tokens.css';
-import { SITE_TITLE } from '../config';
+import '../styles/base.css';
+import { SITE_TITLE, TYPE_ORDER } from '../config';
 import ThemeToggle from '../components/ThemeToggle.astro';
 import Footer from '../components/Footer.astro';
 
 interface Props { title: string; description: string }
 const { title, description } = Astro.props;
 const base = import.meta.env.BASE_URL;
+
+// 今いるページの目印（aria-current）
+const path = Astro.url.pathname;
+const here = (href: string) =>
+  href === base ? path === base : path.startsWith(href);
+const links = [
+  { href: base, label: '町の地図' },
+  { href: `${base}zukan/`, label: '図鑑一覧' },
+];
 ---
 <!doctype html>
 <html lang="ja">
@@ -27,11 +37,22 @@ const base = import.meta.env.BASE_URL;
 <body>
   <a class="skip" href="#main">本文へ飛ぶ</a>
   <header class="top">
-    <a class="home" href={base}>{SITE_TITLE}</a>
-    <div class="right">
-      <a href={`${base}zukan/`}>図鑑一覧</a>
+    <a class="home" href={base}>
+      <!-- 六つのタイプを六つの点で表した印。色だけの記号なので読み上げない -->
+      <svg class="mark" viewBox="0 0 32 32" width="30" height="30" aria-hidden="true" focusable="false">
+        <rect x="1" y="1" width="30" height="30" rx="9" fill="var(--panel)" stroke="var(--line-strong)" />
+        {TYPE_ORDER.map((t, i) => (
+          <circle cx={9 + (i % 3) * 7} cy={12 + Math.floor(i / 3) * 8} r="2.7" style={`fill: var(--${t});`} />
+        ))}
+      </svg>
+      <span class="name">{SITE_TITLE}</span>
+    </a>
+    <nav class="right" aria-label="サイト内の移動">
+      {links.map((l) => (
+        <a class={l.href === base ? 'nav nav-home' : 'nav'} href={l.href} aria-current={here(l.href) ? 'page' : undefined}>{l.label}</a>
+      ))}
       <ThemeToggle />
-    </div>
+    </nav>
   </header>
 
   <main id="main">
@@ -41,19 +62,28 @@ const base = import.meta.env.BASE_URL;
   <div class="foot-wrap"><Footer /></div>
 
 <style>
-  .skip {
-    position: absolute; left: -9999px;
-  }
+  .skip { position: absolute; left: -9999px; }
   .skip:focus {
     left: 1rem; top: 1rem; z-index: 10; background: var(--panel);
-    padding: .5rem .8rem; border: 1px solid var(--line); border-radius: 8px;
+    padding: .5rem .8rem; border: 1px solid var(--line); border-radius: var(--radius-s);
   }
   .top {
-    max-width: 68rem; margin: 0 auto; padding: 1.1rem 1rem;
-    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    max-width: 68rem; margin: 0 auto; padding: .9rem 1rem;
+    display: flex; align-items: center; justify-content: space-between; gap: .6rem 1rem; flex-wrap: wrap;
   }
-  .home { font-weight: 700; text-decoration: none; }
-  .right { display: flex; align-items: center; gap: 1rem; font-size: .86rem; }
+  .home { display: inline-flex; align-items: center; gap: .6rem; text-decoration: none; }
+  .mark { flex: none; display: block; }
+  .name { font-weight: 800; font-size: 1.08rem; letter-spacing: .04em; }
+  .right { display: flex; align-items: center; gap: .15rem; font-size: .86rem; }
+  .nav {
+    text-decoration: none; color: var(--ink-soft);
+    padding: .35rem .7rem; border-radius: 999px; line-height: 1.6;
+    transition: background-color .15s ease, color .15s ease;
+  }
+  .nav:hover { background: var(--panel); color: var(--ink); }
+  .nav[aria-current="page"] { color: var(--ink); background: var(--panel); box-shadow: inset 0 0 0 1px var(--line); }
+  @media (max-width: 480px) { .nav-home { display: none; } }
+  .right :global(#theme-toggle) { margin-left: .4rem; }
   main { max-width: 68rem; margin: 0 auto; padding: 0 1rem; }
   .foot-wrap { max-width: 68rem; margin: 0 auto; padding: 0 1rem; }
 </style>

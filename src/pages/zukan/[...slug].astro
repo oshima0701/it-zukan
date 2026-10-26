@@ -51,7 +51,7 @@ const type = d.type as TypeKey;
           <p class="disputed">このページには諸説ある話が含まれます。本文で「諸説あり」と書いた箇所は、情報源によって説が分かれています。</p>
         )}
 
-        <div class="body">
+        <div class="body prose">
           <Content components={{ Figure, Photo, Cite }} />
         </div>
 
@@ -89,65 +89,84 @@ const type = d.type as TypeKey;
 </Base>
 
 <style>
-  .page { padding: 1rem 0 0; }
+  .page { padding: 1.2rem 0 0; }
 
+  /* 冒頭の「意外な一文」。大きさも色も本文のまま、左の細い線だけを添える */
   .surprise {
-    margin: 0 0 2rem; font-size: 1.1rem; line-height: 1.8;
-    max-width: var(--measure);
+    margin: 0 0 2rem; padding: .2rem 0 .2rem 1.1rem;
+    font-size: 1.1rem; line-height: 1.9; max-width: var(--measure);
+    border-left: 2px solid var(--line-strong);
   }
 
-  .cols { display: grid; gap: 1.5rem; }
+  .cols { display: grid; gap: 1.2rem; }
+  .side { max-width: 30rem; }
   @media (min-width: 900px) {
-    .cols { grid-template-columns: 19rem 1fr; gap: 2.5rem; align-items: start; }
-    .side { position: sticky; top: 1.5rem; }
+    .cols { grid-template-columns: 19.5rem minmax(0, 1fr); gap: 3rem; align-items: start; }
+    /* 左の列は本文と同じ高さまで伸ばし、カードは流れ、目次だけが付いてくる */
+    .side { align-self: stretch; max-width: none; }
   }
 
   .main { min-width: 0; }
   .body { max-width: var(--measure); }
-  .body :global(h2) {
-    margin: 2.4rem 0 .6rem; font-size: 1.18rem; line-height: 1.5;
-    padding-left: .6rem; border-left: 3px solid var(--c);
-  }
-  .body :global(h3) { margin: 1.6rem 0 .4rem; font-size: 1rem; }
-  .body :global(p), .body :global(ul), .body :global(ol) { margin: 0 0 1rem; }
-  .body :global(pre) {
-    background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
-    padding: .8rem 1rem; overflow-x: auto; font-size: .85rem;
-  }
-  .body :global(code) { font-size: .9em; }
-  .body :global(blockquote) {
-    margin: 1rem 0; padding: .2rem 0 .2rem 1rem;
-    border-left: 2px solid var(--line); color: var(--ink-soft);
-  }
 
   .disputed {
     max-width: var(--measure); margin: 0 0 1.5rem; padding: .7rem 1rem;
-    border: 1px dashed var(--line); border-radius: 8px;
-    font-size: .84rem; color: var(--ink-soft);
+    border: 1px dashed var(--line-strong); border-radius: var(--radius-s);
+    font-size: .84rem; line-height: 1.75; color: var(--ink-soft);
   }
 
-  .related { max-width: var(--measure); }
+  .related, .sources { max-width: var(--measure); }
   .related h2, .sources h2 {
-    margin: 2.4rem 0 .6rem; font-size: 1.18rem;
-    padding-left: .6rem; border-left: 3px solid var(--c);
+    margin: 3rem 0 .8rem; padding-top: .9rem;
+    font-size: 1.22rem; line-height: 1.55;
+    border-top: 1px solid var(--line-strong);
   }
   .related ul { list-style: none; margin: 0; padding: 0; display: grid; gap: .5rem; }
-  .related li { display: flex; flex-wrap: wrap; gap: .5rem; align-items: baseline; }
-  .rel, .note { font-size: .78rem; color: var(--ink-soft); }
+  .related li {
+    display: flex; flex-wrap: wrap; gap: .1rem .7rem; align-items: baseline;
+    padding: .55rem .9rem; background: var(--panel);
+    border: 1px solid var(--line); border-radius: var(--radius-m);
+  }
+  .related li a { font-weight: 700; }
+  .rel {
+    font-size: .72rem; color: var(--ink-soft);
+    border: 1px solid var(--line-strong); border-radius: 999px; padding: 0 .55rem;
+  }
+  .note { font-size: .82rem; color: var(--ink-soft); }
 
-  /* ページで唯一、色と大きさを変える場所 */
+  /* ページで唯一、色と大きさを変える場所。ラベル・縁・背景だけがタイプ色を受ける */
   .takeaway {
+    position: relative; overflow: hidden;
     max-width: var(--measure);
-    margin: 2.8rem 0 0; padding: 1.1rem 1.2rem;
-    background: var(--cbg); border-left: 4px solid var(--c); border-radius: 0 10px 10px 0;
-    font-size: 1.12rem; font-weight: 700; line-height: 1.7; color: var(--c);
+    margin: 3.4rem 0 0; padding: 2.7rem 1.4rem 1.4rem 1.5rem;
+    background: var(--cbg); color: var(--ink);
+    border: 1px solid color-mix(in srgb, var(--c) 40%, transparent);
+    border-left: 6px solid var(--c); border-radius: 4px var(--radius-m) var(--radius-m) 4px;
+    font-size: 1.3rem; font-weight: 700; line-height: 1.75;
+  }
+  .takeaway::before {
+    content: "今日のひとこと";
+    position: absolute; left: 1.5rem; top: .85rem;
+    font-size: .76rem; font-weight: 700; letter-spacing: .14em; color: var(--c);
   }
 
-  .sources { max-width: var(--measure); }
-  .sources ol { margin: 0; padding-left: 1.4rem; font-size: .84rem; }
-  .sources li { margin-bottom: .4rem; }
-  .sources small { color: var(--ink-soft); }
-  .sources li:target { background: var(--cbg); }
+  .sources ol {
+    margin: 0; padding: 0; list-style: none; counter-reset: src;
+    display: grid; gap: .5rem; font-size: .86rem; line-height: 1.7;
+  }
+  .sources li {
+    counter-increment: src; position: relative;
+    padding: .1rem .5rem .1rem 2.2rem; border-radius: var(--radius-s);
+  }
+  .sources li::before {
+    content: counter(src); position: absolute; left: .2rem; top: .25rem;
+    width: 1.35rem; height: 1.35rem; border-radius: 50%;
+    border: 1px solid var(--line-strong); color: var(--ink-soft);
+    font-size: .7rem; line-height: 1.25rem; text-align: center; font-variant-numeric: tabular-nums;
+  }
+  .sources a { overflow-wrap: anywhere; }
+  .sources small { color: var(--ink-soft); font-size: .76rem; margin-left: .2rem; }
+  .sources li:target { background: var(--panel-2); box-shadow: inset 0 0 0 1px var(--line-strong); }
 </style>
 
 <script is:inline define:vars={{ slug: entry.id }}>

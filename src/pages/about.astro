@@ -2,7 +2,7 @@
 import Base from '../layouts/Base.astro';
 ---
 <Base title="この図鑑について" description="この図鑑の方針と、出典・更新日・読んだ記録の扱い。">
-  <article class="about">
+  <article class="about prose">
     <h1>この図鑑について</h1>
 
     <p>このサイトは、個人がITの技術を学んだ記録をまとめたものです。</p>
@@ -35,9 +35,6 @@ import Base from '../layouts/Base.astro';
 </Base>
 
 <style>
-  .about { max-width: var(--measure); padding-bottom: 1rem; }
-  h1 { font-size: 1.5rem; margin: .5rem 0 1.2rem; }
-  h2 { font-size: 1.05rem; margin: 2rem 0 .4rem; }
-  p, ul { margin: 0 0 1rem; }
-  ul { padding-left: 1.3rem; display: grid; gap: .35rem; }
+  .about { max-width: var(--measure); padding: 1.2rem 0 1rem; }
+  h1 { font-size: 1.7rem; margin: .5rem 0 1.4rem; font-weight: 800; letter-spacing: .03em; }
 </style>

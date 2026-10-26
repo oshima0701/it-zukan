@@ -2,20 +2,23 @@
 import { FOOTER_NOTE } from '../config';
 ---
 <footer>
-  <p>{FOOTER_NOTE}</p>
-  <nav>
+  <nav aria-label="フッター">
     <a href={import.meta.env.BASE_URL}>町の地図</a>
     <a href={`${import.meta.env.BASE_URL}zukan/`}>図鑑一覧</a>
     <a href={`${import.meta.env.BASE_URL}about/`}>この図鑑について</a>
   </nav>
+  <p>{FOOTER_NOTE}</p>
 </footer>
 
 <style>
   footer {
-    margin-top: 4rem; padding: 1.5rem 0 3rem;
+    margin-top: 5rem; padding: 1.4rem 0 3rem;
     border-top: 1px solid var(--line);
     color: var(--ink-soft); font-size: .82rem;
+    display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: .6rem 1.5rem;
   }
-  p { margin: 0 0 .5rem; }
-  nav { display: flex; gap: 1.2rem; flex-wrap: wrap; }
+  p { margin: 0; }
+  nav { display: flex; gap: .3rem 1.2rem; flex-wrap: wrap; }
+  nav a { text-decoration: none; padding: .2rem 0; }
+  nav a:hover { color: var(--ink); text-decoration: underline; }
 </style>

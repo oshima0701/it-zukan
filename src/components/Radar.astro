@@ -9,9 +9,11 @@ interface Props {
 }
 const { status, type } = Astro.props;
 
-const SIZE = 170;
-const C = SIZE / 2;
-const R = 58;
+const W = 260;
+const H = 206;
+const CX = W / 2;
+const CY = 112;
+const R = 66;
 const MAX = 5;
 
 const keys = ['difficulty', 'popularity', 'breadth'] as const;
@@ -22,35 +24,47 @@ const dirs = keys.map((_, i) => {
   return { cos: Math.cos(a), sin: Math.sin(a) };
 });
 
-const at = (i: number, r: number) => [
-  (C + dirs[i].cos * r).toFixed(1),
-  (C + dirs[i].sin * r).toFixed(1),
+const pt = (i: number, r: number): [number, number] => [
+  +(CX + dirs[i].cos * r).toFixed(1),
+  +(CY + dirs[i].sin * r).toFixed(1),
 ];
+const poly = (r: (i: number) => number) =>
+  dirs.map((_, i) => pt(i, r(i)).join(',')).join(' ');
 
-const rings = [1, 2, 3, 4, 5].map((step) =>
-  dirs.map((_, i) => at(i, (R * step) / MAX).join(',')).join(' ')
-);
+const rings = [1, 2, 3, 4, 5].map((step) => ({
+  step,
+  points: poly(() => (R * step) / MAX),
+}));
+const shape = poly((i) => (R * status[keys[i]]) / MAX);
+const dots = keys.map((k, i) => pt(i, (R * status[k]) / MAX));
 
-const shape = keys
-  .map((k, i) => at(i, (R * status[k]) / MAX).join(','))
-  .join(' ');
-
+// ラベルは頂点の外側。上は真上、下の2つは斜め外側に置く。
 const labels = keys.map((k, i) => {
-  const [x, y] = at(i, R + 20);
-  return { text: STATUS_LABELS[k], value: status[k], x, y };
+  const [x, y] = pt(i, R + 14);
+  return {
+    text: STATUS_LABELS[k],
+    value: status[k],
+    x,
+    y: i === 0 ? y - 4 : y + 8,
+    anchor: i === 0 ? 'middle' : i === 1 ? 'start' : 'end',
+    dx: i === 1 ? -6 : i === 2 ? 6 : 0,
+  };
 });
 ---
 <div class="radar" style={`--c: var(--${type});`}>
-  <svg viewBox={`0 0 ${SIZE} ${SIZE}`} role="img"
+  <svg viewBox={`0 0 ${W} ${H}`} role="img"
        aria-label={keys.map((k) => `${STATUS_LABELS[k]} ${status[k]}点（5点満点）`).join('、')}>
-    {rings.map((pts) => <polygon points={pts} class="ring" />)}
+    {rings.map((r) => <polygon points={r.points} class={r.step === MAX ? 'ring outer' : 'ring'} />)}
     {dirs.map((_, i) => {
-      const [x, y] = at(i, R);
-      return <line x1={C} y1={C} x2={x} y2={y} class="spoke" />;
+      const [x, y] = pt(i, R);
+      return <line x1={CX} y1={CY} x2={x} y2={y} class="spoke" />;
     })}
     <polygon points={shape} class="shape" />
+    {dots.map(([x, y]) => <circle cx={x} cy={y} r="4" class="dot" />)}
     {labels.map((l) => (
-      <text x={l.x} y={l.y} class="label" text-anchor="middle" dominant-baseline="middle">{l.text}</text>
+      <text x={l.x + l.dx} y={l.y} class="label" text-anchor={l.anchor}>
+        {l.text}<tspan class="val" dx="5">{l.value}</tspan>
+      </text>
     ))}
   </svg>
   <ul class="visually-hidden">
@@ -60,9 +74,14 @@ const labels = keys.map((k, i) => {
 
 <style>
   .radar { display: flex; justify-content: center; }
-  svg { width: 100%; max-width: 190px; height: auto; overflow: visible; }
-  .ring { fill: none; stroke: var(--line); stroke-width: 1; }
-  .spoke { stroke: var(--line); stroke-width: 1; }
-  .shape { fill: var(--c); fill-opacity: .22; stroke: var(--c); stroke-width: 2; }
-  .label { font-size: 10px; fill: var(--ink-soft); }
+  svg { width: 100%; max-width: 270px; height: auto; overflow: visible; }
+  .ring { fill: none; stroke: var(--line); stroke-width: 1; stroke-dasharray: 2 3; }
+  .ring.outer { stroke: var(--line-strong); stroke-dasharray: none; }
+  .spoke { stroke: var(--line-strong); stroke-width: 1; }
+  .shape {
+    fill: var(--c); fill-opacity: .2; stroke: var(--c); stroke-width: 2; stroke-linejoin: round;
+  }
+  .dot { fill: var(--panel); stroke: var(--c); stroke-width: 2; }
+  .label { font-size: 12.5px; fill: var(--ink-soft); }
+  .val { font-size: 15px; font-weight: 700; fill: var(--ink); }
 </style>

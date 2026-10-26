@@ -1,47 +1,68 @@
-/* 配色はここだけ。SVGの図解・レーダー・地図もこの変数から色を受ける。 */
+/* 配色はここだけ。SVGの図解・レーダー・地図もこの変数から色を受ける。
+   本文のコントラストは、ライト・ダークとも WCAG AA（4.5:1）以上。
+   タイプ色は「色／背景色」「背景に白抜き」の両方で 5:1 前後を確保している。 */
 :root {
   --bg: #fbfaf7;
   --panel: #ffffff;
+  --panel-2: #f6f3ec;          /* パネルの中の一段くぼんだ面 */
   --ink: #1c1a17;
   --ink-soft: #5d574e;
   --line: #e3ded4;
-  --shadow: 0 1px 2px rgba(28, 26, 23, .06), 0 8px 24px rgba(28, 26, 23, .06);
+  --line-strong: #cdc6b6;
+  --wash: #f3eee2;             /* ページ上部のうっすらした地色 */
+  --shadow: 0 1px 2px rgba(28, 26, 23, .06), 0 10px 28px rgba(28, 26, 23, .07);
+  --shadow-s: 0 1px 2px rgba(28, 26, 23, .06);
 
-  --language: #2563eb;
-  --tool: #c2410c;
-  --ai: #7c3aed;
-  --place: #047857;
-  --mechanism: #be123c;
-  --data: #a16207;
+  --language: #1f55d4;
+  --tool: #b23a08;
+  --ai: #6d2fdb;
+  --place: #046c4e;
+  --mechanism: #b01238;
+  --data: #855006;
 
-  --language-bg: #eaf1ff;
-  --tool-bg: #fdeee5;
-  --ai-bg: #f1ebfe;
-  --place-bg: #e4f5ef;
-  --mechanism-bg: #fdeaee;
-  --data-bg: #f8f0dc;
+  --language-bg: #e8efff;
+  --tool-bg: #fdece1;
+  --ai-bg: #f0eafd;
+  --place-bg: #e1f4ec;
+  --mechanism-bg: #fde8ec;
+  --data-bg: #f7eed6;
 
-  --map-ground: #f3efe6;
-  --map-road: #e6e0d3;
+  --on-c: #ffffff;             /* タイプ色の面の上に乗せる文字色 */
 
-  --measure: 34rem;
+  --map-ground: #f1ece0;
+  --map-grid: #e6dfcf;
+  --map-road: #fffdf8;
+  --map-edge: #d9d1bf;
+  --map-mark: #ddd5c2;         /* 木立・コンパスなどの飾り */
+
+  --measure: 35rem;
+  --radius-s: 8px;
+  --radius-m: 12px;
+  --radius-l: 18px;
+
+  --font-sans: "Hiragino Kaku Gothic ProN", "Yu Gothic UI", "Meiryo", system-ui, sans-serif;
+  --font-mono: "Cascadia Mono", "SFMono-Regular", Consolas, "Courier New", monospace;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #17161a;
     --panel: #201f24;
+    --panel-2: #1a191e;
     --ink: #eceaf0;
     --ink-soft: #a8a2b0;
     --line: #34323a;
-    --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px rgba(0, 0, 0, .35);
+    --line-strong: #4a4752;
+    --wash: #1d1c23;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 10px 28px rgba(0, 0, 0, .35);
+    --shadow-s: 0 1px 2px rgba(0, 0, 0, .4);
 
-    --language: #7aacff;
-    --tool: #ff9d63;
-    --ai: #b79bff;
-    --place: #45d6a4;
-    --mechanism: #ff8098;
-    --data: #e0b44a;
+    --language: #8ab6ff;
+    --tool: #ffa573;
+    --ai: #c1a8ff;
+    --place: #52dcab;
+    --mechanism: #ff8fa6;
+    --data: #e6bc55;
 
     --language-bg: #1b2436;
     --tool-bg: #33211a;
@@ -50,59 +71,43 @@
     --mechanism-bg: #341d24;
     --data-bg: #2e2616;
 
-    --map-ground: #23222a;
-    --map-road: #2e2d36;
+    --on-c: #17161a;
+
+    --map-ground: #1f1e26;
+    --map-grid: #282731;
+    --map-road: #34323d;
+    --map-edge: #2a2931;
+    --map-mark: #2f2e38;
   }
 }
 
 :root[data-theme="dark"] {
   --bg: #17161a;
   --panel: #201f24;
+  --panel-2: #1a191e;
   --ink: #eceaf0;
   --ink-soft: #a8a2b0;
   --line: #34323a;
-  --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px rgba(0, 0, 0, .35);
-  --language: #7aacff;
-  --tool: #ff9d63;
-  --ai: #b79bff;
-  --place: #45d6a4;
-  --mechanism: #ff8098;
-  --data: #e0b44a;
+  --line-strong: #4a4752;
+  --wash: #1d1c23;
+  --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 10px 28px rgba(0, 0, 0, .35);
+  --shadow-s: 0 1px 2px rgba(0, 0, 0, .4);
+  --language: #8ab6ff;
+  --tool: #ffa573;
+  --ai: #c1a8ff;
+  --place: #52dcab;
+  --mechanism: #ff8fa6;
+  --data: #e6bc55;
   --language-bg: #1b2436;
   --tool-bg: #33211a;
   --ai-bg: #272038;
   --place-bg: #15302a;
   --mechanism-bg: #341d24;
   --data-bg: #2e2616;
-  --map-ground: #23222a;
-  --map-road: #2e2d36;
+  --on-c: #17161a;
+  --map-ground: #1f1e26;
+  --map-grid: #282731;
+  --map-road: #34323d;
+  --map-edge: #2a2931;
+  --map-mark: #2f2e38;
 }
-
-* { box-sizing: border-box; }
-
-html { scroll-behavior: smooth; }
-@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
-
-body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--ink);
-  font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic UI", "Meiryo", system-ui, sans-serif;
-  line-height: 1.85;
-  -webkit-text-size-adjust: 100%;
-}
-
-a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: .2em; }
-
-/* 本文の太字は、色も大きさも変えない。
-   色や大きさを変える強調は「今日のひとこと」1か所だけという決まりのため。 */
-article strong { font-weight: 700; color: inherit; font-size: inherit; }
-
-img { max-width: 100%; height: auto; }
-
-.visually-hidden {
-  position: absolute; width: 1px; height: 1px; overflow: hidden;
-  clip-path: inset(50%); white-space: nowrap;
-}
-
-:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }

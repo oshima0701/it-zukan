@@ -7,7 +7,7 @@ const { n } = Astro.props;
 <sup class="cite"><a href={`#src-${n}`} aria-label={`出典 ${n}`}>[{n}]</a></sup>
 
 <style>
-  .cite { font-size: .7em; }
-  .cite a { text-decoration: none; color: var(--ink-soft); padding: 0 .1em; }
-  .cite a:hover { text-decoration: underline; }
+  .cite { font-size: .7em; line-height: 0; }
+  .cite a { text-decoration: none; color: var(--ink-soft); padding: .3em .25em; }
+  .cite a:hover { color: var(--ink); text-decoration: underline; }
 </style>

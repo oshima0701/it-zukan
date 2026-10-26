@@ -1,0 +1,79 @@
+/* 全ページ共通の土台と、読み物（.prose）の組み方。色は tokens.css の変数だけを使う。 */
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; scroll-padding-top: 1.5rem; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  background-image: linear-gradient(var(--wash), var(--bg) 22rem);
+  background-repeat: no-repeat;
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.85;
+  letter-spacing: .01em;
+  -webkit-text-size-adjust: 100%;
+  overflow-wrap: break-word;
+}
+
+a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: .22em; }
+
+/* 本文の太字は、色も大きさも変えない。
+   色や大きさを変える強調は「今日のひとこと」1か所だけという決まりのため。 */
+article strong { font-weight: 700; color: inherit; font-size: inherit; }
+
+img { max-width: 100%; height: auto; }
+
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip-path: inset(50%); white-space: nowrap;
+}
+
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; border-radius: 4px; }
+
+::selection { background: var(--line-strong); }
+
+/* ---- 読み物の組み方（図鑑ページの本文・このサイトについて） ---- */
+.prose { line-height: 1.95; }
+.prose > :first-child { margin-top: 0; }
+
+.prose h2 {
+  margin: 3rem 0 .8rem; padding-top: .9rem;
+  font-size: 1.22rem; line-height: 1.55; font-weight: 700;
+  border-top: 1px solid var(--line-strong);   /* 見出しは色を使わず、細い線で区切る */
+}
+.prose h3 { margin: 1.8rem 0 .4rem; font-size: 1.02rem; line-height: 1.6; }
+.prose p, .prose ul, .prose ol { margin: 0 0 1.1rem; }
+.prose ul, .prose ol { padding-left: 1.4rem; }
+.prose li { margin-bottom: .3rem; }
+.prose li::marker { color: var(--ink-soft); }
+
+.prose a { text-decoration-color: var(--ink-soft); text-decoration-thickness: 1px; }
+.prose a:hover { text-decoration-thickness: 2px; }
+
+.prose code {
+  font-family: var(--font-mono); font-size: .88em;
+  background: var(--panel-2); border: 1px solid var(--line);
+  border-radius: 5px; padding: .08em .38em;
+}
+.prose pre {
+  margin: 1.2rem 0; padding: .9rem 1.1rem; overflow-x: auto;
+  background: var(--panel-2); border: 1px solid var(--line); border-radius: var(--radius-s);
+  font-size: .85rem; line-height: 1.7;
+}
+.prose pre code { background: none; border: 0; padding: 0; font-size: inherit; }
+
+.prose blockquote {
+  margin: 1.2rem 0; padding: .2rem 0 .2rem 1rem;
+  border-left: 2px solid var(--line-strong); color: var(--ink-soft);
+}
+.prose hr { border: 0; border-top: 1px solid var(--line); margin: 2.4rem 0; }
+.prose table { border-collapse: collapse; width: 100%; font-size: .9rem; margin: 1.2rem 0; display: block; overflow-x: auto; }
+.prose th, .prose td { text-align: left; padding: .45rem .7rem; border-bottom: 1px solid var(--line); }
+.prose th { color: var(--ink-soft); font-weight: 700; white-space: nowrap; }

@@ -12,4 +12,8 @@ export default defineConfig({
   base: BASE,
   trailingSlash: 'always',
   integrations: [mdx(), sitemap()],
+  build: {
+    // CSSをHTMLに埋め込む。1枚のファイルだけ渡しても見た目が崩れない。
+    inlineStylesheets: 'always',
+  },
 });

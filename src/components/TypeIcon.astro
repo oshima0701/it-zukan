@@ -1,0 +1,16 @@
+---
+// タイプの絵記号。色は currentColor。装飾なので読み上げない（タイプ名は隣の文字が担う）。
+import { TYPE_ICONS } from '../data/typeIcons';
+
+interface Props { type: string; size?: number }
+const { type, size = 16 } = Astro.props;
+const paths = TYPE_ICONS[type] ?? [];
+---
+<svg class="ticon" viewBox="0 0 24 24" width={size} height={size} aria-hidden="true" focusable="false"
+     fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+  {paths.map((d) => <path d={d} />)}
+</svg>
+
+<style>
+  .ticon { flex: none; display: inline-block; vertical-align: -0.2em; }
+</style>

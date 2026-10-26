@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
+import TypeIcon from '../../components/TypeIcon.astro';
 import { TYPES, TYPE_ORDER, STALE_AFTER_DAYS, type TypeKey } from '../../config';
 
 const all = (await getCollection('zukan')).filter((e) => !e.data.draft);
@@ -41,14 +42,19 @@ const counts = TYPE_ORDER.map((t) => ({
   <div class="controls">
     <label class="search">
       <span class="visually-hidden">名前で絞り込む</span>
+      <svg class="glass" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"
+           fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+        <circle cx="10.5" cy="10.5" r="6.5" /><path d="M15.5 15.5L21 21" />
+      </svg>
       <input type="search" id="q" placeholder="名前・読み方で絞り込む（例: ギット）" autocomplete="off" />
     </label>
 
     <div class="filters" role="group" aria-label="タイプで絞り込む">
-      <button type="button" class="chip on" data-type="all">すべて（{items.length}）</button>
+      <button type="button" class="chip on" data-type="all" aria-pressed="true">すべて（{items.length}）</button>
       {counts.map((c) => (
-        <button type="button" class="chip" data-type={c.key} style={`--c: var(--${c.key}); --cbg: var(--${c.key}-bg);`}>
-          {c.label}（{c.n}）
+        <button type="button" class="chip" data-type={c.key} aria-pressed="false"
+                style={`--c: var(--${c.key}); --cbg: var(--${c.key}-bg);`}>
+          <TypeIcon type={c.key} size={15} />{c.label}（{c.n}）
         </button>
       ))}
     </div>
@@ -71,7 +77,10 @@ const counts = TYPE_ORDER.map((t) => ({
           data-order={i.order} data-no={i.no} data-updated={i.updated}
           style={`--c: var(--${i.type}); --cbg: var(--${i.type}-bg);`}>
         <a href={`${base}zukan/${i.slug}/`}>
-          <span class="band" aria-hidden="true"></span>
+          <span class="band" aria-hidden="true">
+            <TypeIcon type={i.type} size={22} />
+            <span class="num">{String(i.no).padStart(3, '0')}</span>
+          </span>
           <span class="text">
             <span class="head">
               <strong>{i.name}</strong>
@@ -91,47 +100,66 @@ const counts = TYPE_ORDER.map((t) => ({
 </Base>
 
 <style>
-  h1 { font-size: 1.5rem; margin: .5rem 0 .3rem; }
-  .lede { color: var(--ink-soft); font-size: .9rem; margin: 0 0 1.5rem; }
+  h1 { font-size: 1.7rem; margin: 1.4rem 0 .2rem; font-weight: 800; letter-spacing: .03em; }
+  .lede { color: var(--ink-soft); font-size: .92rem; margin: 0 0 1.5rem; }
 
-  .controls { display: grid; gap: .8rem; margin-bottom: 1.5rem; }
+  .controls { display: grid; gap: .9rem; margin-bottom: 1.5rem; }
+
+  .search { position: relative; display: block; max-width: 26rem; }
+  .search .glass { position: absolute; left: .85rem; top: 50%; transform: translateY(-50%); color: var(--ink-soft); pointer-events: none; }
   .search input {
-    width: 100%; max-width: 24rem; padding: .55rem .8rem;
-    border: 1px solid var(--line); border-radius: 8px;
-    background: var(--panel); color: var(--ink); font: inherit; font-size: .9rem;
+    width: 100%; min-height: 2.75rem; padding: .55rem .9rem .55rem 2.6rem;
+    border: 1px solid var(--line-strong); border-radius: 999px;
+    background: var(--panel); color: var(--ink); font: inherit; font-size: .92rem;
   }
-  .filters { display: flex; flex-wrap: wrap; gap: .4rem; }
+  .search input::placeholder { color: var(--ink-soft); }
+
+  .filters { display: flex; flex-wrap: wrap; gap: .45rem; }
   .chip {
-    border: 1px solid var(--line); background: var(--panel); color: var(--ink-soft);
-    border-radius: 999px; padding: .25rem .75rem; font: inherit; font-size: .8rem; cursor: pointer;
+    display: inline-flex; align-items: center; gap: .35rem; min-height: 2.5rem;
+    border: 1px solid var(--line-strong); background: var(--panel); color: var(--ink-soft);
+    border-radius: 999px; padding: .2rem .9rem; font: inherit; font-size: .82rem; cursor: pointer;
+    transition: background-color .15s ease, border-color .15s ease;
   }
-  .chip.on { background: var(--cbg, var(--line)); color: var(--c, var(--ink)); border-color: var(--c, var(--line)); font-weight: 700; }
+  .chip:hover { border-color: var(--c, var(--ink-soft)); }
+  .chip.on {
+    background: var(--cbg, var(--ink)); color: var(--c, var(--bg));
+    border-color: var(--c, var(--ink)); font-weight: 700;
+    box-shadow: inset 0 0 0 1px var(--c, var(--ink));
+  }
+
   .sort { display: flex; align-items: center; gap: .5rem; font-size: .84rem; color: var(--ink-soft); }
   .sort select {
-    font: inherit; font-size: .84rem; padding: .3rem .5rem;
-    border: 1px solid var(--line); border-radius: 8px;
+    font: inherit; font-size: .86rem; min-height: 2.5rem; padding: .3rem 1rem .3rem .8rem;
+    border: 1px solid var(--line-strong); border-radius: 999px;
     background: var(--panel); color: var(--ink);
   }
 
-  .list { list-style: none; margin: 0; padding: 0; display: grid; gap: .6rem; }
+  .list { list-style: none; margin: 0; padding: 0; display: grid; gap: .7rem; }
   .row a {
-    display: flex; gap: 0; text-decoration: none;
-    background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
-    overflow: hidden;
+    display: flex; text-decoration: none;
+    background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius-m);
+    overflow: hidden; box-shadow: var(--shadow-s);
+    transition: border-color .15s ease, box-shadow .15s ease;
   }
-  .row a:hover { border-color: var(--c); }
-  .band { width: 6px; background: var(--c); flex: 0 0 6px; }
-  .text { display: block; padding: .8rem 1rem; min-width: 0; }
-  .head { display: flex; flex-wrap: wrap; gap: .5rem; align-items: baseline; }
-  .head strong { font-size: 1.02rem; }
+  .row a:hover { border-color: var(--c); box-shadow: var(--shadow); }
+  /* 左のタイル：絵記号と図鑑番号。色は面で見せ、タイプ名は右のバッジが文字で示す */
+  .band {
+    flex: 0 0 4.4rem; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .15rem;
+    background: var(--cbg); color: var(--c); border-right: 1px solid var(--line);
+  }
+  .num { font-size: .72rem; font-weight: 700; letter-spacing: .1em; font-variant-numeric: tabular-nums; }
+  .text { display: block; padding: .8rem 1rem .85rem; min-width: 0; }
+  .head { display: flex; flex-wrap: wrap; gap: 0 .6rem; align-items: baseline; }
+  .head strong { font-size: 1.1rem; line-height: 1.6; }
   .reading { font-size: .76rem; color: var(--ink-soft); }
   .badge {
     font-size: .7rem; font-weight: 700; color: var(--c);
-    background: var(--cbg); border-radius: 999px; padding: .05rem .5rem;
+    background: var(--cbg); border-radius: 999px; padding: .05rem .6rem;
   }
-  .one { display: block; font-size: .86rem; margin-top: .2rem; }
-  .meta { display: block; font-size: .72rem; color: var(--ink-soft); margin-top: .35rem; }
-  .empty { color: var(--ink-soft); font-size: .9rem; }
+  .one { display: block; font-size: .88rem; line-height: 1.75; margin-top: .1rem; }
+  .meta { display: block; font-size: .72rem; color: var(--ink-soft); margin-top: .3rem; line-height: 1.6; }
+  .empty { color: var(--ink-soft); font-size: .9rem; padding: 1rem 0; }
   .row[hidden] { display: none; }
 </style>
 
@@ -170,7 +198,10 @@ const counts = TYPE_ORDER.map((t) => ({
     chips.forEach(function (c) {
       c.addEventListener('click', function () {
         type = c.dataset.type;
-        chips.forEach(function (x) { x.classList.toggle('on', x === c); });
+        chips.forEach(function (x) {
+          x.classList.toggle('on', x === c);
+          x.setAttribute('aria-pressed', x === c ? 'true' : 'false');
+        });
         apply();
       });
     });
