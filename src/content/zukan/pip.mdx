@@ -1,0 +1,113 @@
+---
+no: 22
+name: pip
+reading: ぴっぷ
+type: tool
+oneLine: Python の部品を取ってきて入れる道具。
+surprise: >
+  pip という名前は「pip installs packages」の略だとされています。
+  説明の中に自分の名前が入っていて、いつまでも終わりません。これは昔からある技術者の冗談の型です。
+takeaway: >
+  1つ入れたつもりが、その下にぶら下がったものまで入ってきます。入れたものの数は、思っているより多くなります。
+status:
+  difficulty: 2
+  popularity: 5
+  breadth: 3
+order: 220
+updated: 2026-10-26
+born: 2008
+creators:
+  - name: イアン・ビッキング
+    nameEn: Ian Bicking
+    personId: ian-bicking
+mascot:
+  name: なし
+officialUrl: https://pip.pypa.io/
+aliases: [ピップ]
+related:
+  - slug: python
+    relation: partner
+    note: これの部品を扱う
+  - slug: venv
+    relation: partner
+    note: 入れ先を分ける道具
+sources:
+  - id: 1
+    title: pip 公式ドキュメント
+    url: https://pip.pypa.io/en/stable/
+    accessed: 2026-10-26
+  - id: 2
+    title: pip - Wikipedia
+    url: https://en.wikipedia.org/wiki/Pip_%28package_manager%29
+    accessed: 2026-10-26
+---
+
+{/* block: birth */}
+## なぜ「部品を入れる道具」が必要なのか？
+
+よく使う処理は、たいてい誰かが書いて公開しています。表計算を読む、画像を縮める、日付を扱う。自分で書く必要はありません。
+
+ただし、公開されているものを手で集めるのは大変です。場所を探し、落とし、置き場所に配り、更新があればまた繰り返す。
+
+pip は、その手間を1行に畳みます<Cite n={1} />。`pip install 名前` と打てば、探して、落として、使える場所に置くところまでやります。
+
+{/* block: naming */}
+## 名前の由来：終わらない説明
+
+pip は「pip installs packages（pip は部品を入れる）」の略だとされています<Cite n={2} />。
+
+説明しようとすると、説明の中にまた pip が出てきます。その pip を説明しようとすると、また出てきます。永遠に終わりません。
+
+これは技術者の昔からの冗談の型です。「自分で自分を説明する名前」をわざと付けて面白がる文化があります。
+
+{/* block: analogy */}
+## たとえ話：通販で頼んだら箱がいくつも届いた
+
+棚を1つ注文したつもりが、ネジの箱、工具、説明書、さらにその工具用の部品まで一緒に届く。
+
+pip も同じです。1つ入れると、それが必要としているものまで芋づる式に入ります。数十個になることもあります。
+
+便利ですが、「自分が何を入れたか」を把握しにくくなります。
+
+{/* block: figure */}
+## 芋づる式に入ってくる
+
+<Figure name="package-tree" caption="1つ入れると、その下にぶら下がっているものまで連なって入ります。部品の数が増えるのはこのためです" />
+
+{/* block: skills */}
+## 最初に覚える3つ
+
+| やりたいこと | 書き方 |
+|---|---|
+| 入れる | `pip install 名前` |
+| いま何が入っているか見る | `pip list` |
+| 入っているものを控える | `pip freeze > requirements.txt` |
+
+3つめが実務で効きます。入っているものを一覧として書き出しておけば、別のパソコンで同じ状態を再現できます。「わたしの環境では動く」を避ける第一歩です。
+
+{/* block: you */}
+## あなたとの関係
+
+Python で何かしようとすると、ほぼ必ず最初に出てくるのが pip です。手順書の1行目が `pip install` で始まることは珍しくありません。
+
+ただし、何も考えずに入れ続けると、パソコンの中が散らかります。そこで出てくるのが仮想環境の話です。
+
+{/* block: misunderstanding */}
+## よくある誤解：入れたものは安全
+
+公開されている部品は、誰でも登録できます。名前が似ているだけの、まったく別のものが混ざっていることがあります。
+
+打ち間違いを狙って、よく使われる部品に似た名前で悪意あるものを登録する手口が知られています。入れる前に名前を確かめる、公式のページから名前を取る、という習慣が要ります。
+
+{/* block: firststep */}
+## 今日5分でできること
+
+ターミナルで `pip list` と打ってみてください。すでに何が入っているかが一覧で出ます。
+
+何も入れた覚えがなくても、いくつか並んでいるはずです。Python を入れた時点で付いてくるものです。
+
+{/* block: materials */}
+## 無料教材
+
+- [pip 公式ドキュメント](https://pip.pypa.io/en/stable/)（無料・英語）
+- [Python モジュールのインストール - Python 公式](https://docs.python.org/ja/3/installing/index.html)（無料・日本語）

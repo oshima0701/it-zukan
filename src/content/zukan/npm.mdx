@@ -1,0 +1,121 @@
+---
+no: 23
+name: npm
+reading: えぬぴーえむ
+type: tool
+oneLine: JavaScript の部品を取ってきて入れる道具と、その置き場。
+surprise: >
+  2016年、たった11行の小さな部品が公開を取り下げられただけで、
+  世界中の有名なソフトが一斉に組み立てられなくなりました。
+takeaway: >
+  便利さと脆さは同じ仕組みから来ています。小さな部品に世界中がぶら下がっている、という構造そのものです。
+status:
+  difficulty: 2
+  popularity: 5
+  breadth: 4
+order: 230
+updated: 2026-10-26
+born: 2010
+creators:
+  - name: アイザック・シュルーター
+    nameEn: Isaac Z. Schlueter
+    personId: isaac-schlueter
+mascot:
+  name: ウォンバット
+  origin: 公式サイトなどに登場する動物
+officialUrl: https://www.npmjs.com/
+aliases: [エヌピーエム]
+related:
+  - slug: javascript
+    relation: partner
+    note: これの部品を扱う
+  - slug: pip
+    relation: rival
+    note: Python 側の同じ役回り
+sources:
+  - id: 1
+    title: npm 公式ドキュメント
+    url: https://docs.npmjs.com/
+    accessed: 2026-10-26
+  - id: 2
+    title: npm - Wikipedia
+    url: https://en.wikipedia.org/wiki/Npm
+    accessed: 2026-10-26
+  - id: 3
+    title: left-pad - Wikipedia（2016年の出来事）
+    url: https://en.wikipedia.org/wiki/Npm#Notable_breakages
+    accessed: 2026-10-26
+---
+
+{/* block: birth */}
+## なぜ部品がこれほど細かいのか？
+
+npm は2010年に始まりました<Cite n={2} />。JavaScript の部品を登録し、取ってくるための仕組みです。
+
+特徴は、部品がきわめて細かいことです。他の言語なら標準で付いてくるような小さな処理が、それぞれ独立した部品として公開されています。
+
+理由のひとつは、JavaScript の標準の機能がもともと乏しかったことです。足りないものを各自が書いて公開した結果、小さな部品が無数に生まれました。そしてそれらが互いを必要とし合い、深い連なりができあがりました<Cite n={2} />。
+
+{/* block: naming */}
+## 名前の由来：公式には「略語ではない」
+
+一般に Node Package Manager の略と説明されますが、公式には「npm は略語ではない」という立場が取られてきました<Cite n={2} />。
+
+小文字で書くのが決まりです。文頭でも NPM とは書きません。
+
+{/* block: analogy */}
+## たとえ話：ネジ1本に全部がぶら下がる
+
+大きな機械が、どこかの小さなネジ1本に依存しているとします。そのネジの製造元が「やめます」と言った瞬間、機械が組み立てられなくなります。
+
+2016年、これが実際に起きました。文字の左側を埋めるだけの、11行ほどの小さな部品が公開を取り下げられ、世界中の有名なソフトが一斉に組み立てられなくなりました<Cite n={3} />。
+
+{/* block: figure */}
+## 芋づる式に入ってくる
+
+<Figure name="package-tree" caption="1つ入れると、その下にぶら下がっているものまで入ります。npm ではこの連なりがとくに深くなります" />
+
+{/* block: skills */}
+## 最初に覚える3つ
+
+| やりたいこと | 書き方 |
+|---|---|
+| 必要なものをまとめて入れる | `npm install` |
+| 新しく1つ入れる | `npm install 名前` |
+| 決められた作業を動かす | `npm run 名前` |
+
+1つめは、`package.json` という控えに書かれたものを全部入れる、という意味です<Cite n={1} />。人から受け取ったプロジェクトを動かすとき、最初に打つのがこれです。
+
+{/* block: you */}
+## あなたとの関係
+
+このサイトも npm で部品を集めて組み立てています。`npm run build` と打つと、文章から公開用のページができます。
+
+JavaScript を書かなくても、何かの手順書に `npm install` と書かれていることはよくあります。「必要なものを揃える」という意味だと分かっていれば、身構えずに済みます。
+
+{/* block: internet */}
+## ネットでの扱われ方
+
+部品を入れると作られる `node_modules` というフォルダが、やたらに大きくなることで有名です。「宇宙で最も重い物体」という冗談が定番になっています。
+
+笑い話ですが、原因は構造そのものです。小さな部品が互いを必要とし合うので、数が増えます。
+
+{/* block: incident */}
+## left-pad 事件（2016年）
+
+文字の左側を指定の長さまで埋める、11行ほどの部品がありました。作者が名前をめぐる揉めごとから公開を取り下げたところ、それに依存していた多くのソフトが組み立てられなくなりました<Cite n={3} />。
+
+教訓は「小さい部品だから影響も小さい」が成り立たないことです。影響の大きさは、部品の大きさではなく、どれだけのものがぶら下がっているかで決まります。
+
+{/* block: firststep */}
+## 今日5分でできること
+
+何かの JavaScript のプロジェクトを手に入れたら、`package.json` を開いてみてください。
+
+`dependencies` の欄に並んでいるのが、直接入れたものです。たいてい十数個です。そのあと `node_modules` フォルダの中を見ると、数百個入っています。差が、ぶら下がっていたものの数です。
+
+{/* block: materials */}
+## 無料教材
+
+- [npm 公式ドキュメント](https://docs.npmjs.com/)（無料・英語）
+- [npm パッケージを探す](https://www.npmjs.com/)（無料・英語）

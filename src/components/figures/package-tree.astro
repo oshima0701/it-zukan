@@ -1,0 +1,39 @@
+---
+// ひとつ入れると、その下にぶら下がっているものまで来る。
+---
+<svg viewBox="0 0 440 200" role="img" aria-label="ひとつの部品を取り込むと、その部品が必要とする部品まで連なって入ってくる図">
+  <rect x="166" y="16" width="108" height="34" rx="8" fill="var(--tool-bg)" stroke="var(--tool)" stroke-width="2"/>
+  <text x="220" y="38" font-size="11" text-anchor="middle" fill="var(--tool)">入れたもの</text>
+
+  <g stroke="var(--line-strong, var(--ink-soft))" stroke-width="1.5" fill="none">
+    <path d="M220 50 L220 66 L110 66 L110 82"/>
+    <path d="M220 66 L330 66 L330 82"/>
+    <path d="M110 116 L110 132 L58 132 L58 148"/>
+    <path d="M110 132 L162 132 L162 148"/>
+    <path d="M330 116 L330 132 L278 132 L278 148"/>
+    <path d="M330 132 L382 132 L382 148"/>
+  </g>
+
+  <g fill="var(--panel)" stroke="var(--line)" stroke-width="2">
+    <rect x="62" y="82" width="96" height="34" rx="7"/>
+    <rect x="282" y="82" width="96" height="34" rx="7"/>
+  </g>
+  <g font-size="10" text-anchor="middle" fill="var(--ink-soft)">
+    <text x="110" y="104">必要な部品</text>
+    <text x="330" y="104">必要な部品</text>
+  </g>
+
+  <g fill="var(--panel)" stroke="var(--line)" stroke-width="1.5">
+    <rect x="22" y="148" width="72" height="28" rx="6"/>
+    <rect x="126" y="148" width="72" height="28" rx="6"/>
+    <rect x="242" y="148" width="72" height="28" rx="6"/>
+    <rect x="346" y="148" width="72" height="28" rx="6"/>
+  </g>
+  <g font-size="9" text-anchor="middle" fill="var(--ink-soft)">
+    <text x="58" y="166">さらに下</text>
+    <text x="162" y="166">さらに下</text>
+    <text x="278" y="166">さらに下</text>
+    <text x="382" y="166">さらに下</text>
+  </g>
+  <text x="220" y="194" font-size="10" text-anchor="middle" fill="var(--ink-soft)">1つ入れたつもりが、数十〜数百になることがある</text>
+</svg>
