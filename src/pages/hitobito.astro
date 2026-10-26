@@ -1,0 +1,149 @@
+---
+// 人物相関図。人物のデータは別に持たず、図鑑の creators から組み立てる。
+// 別に持つと図鑑側と必ず食い違うため。
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { TYPES, type TypeKey } from '../config';
+
+const base = import.meta.env.BASE_URL;
+const zukan = (await getCollection('zukan')).filter((e) => !e.data.draft);
+
+type Work = { slug: string; name: string; type: TypeKey; born?: number };
+type Person = { key: string; name: string; nameEn?: string; works: Work[] };
+
+const people = new Map<string, Person>();
+for (const e of zukan) {
+  for (const c of e.data.creators ?? []) {
+    // personId があればそれで束ねる。無ければ表示名で束ねる。
+    const key = c.personId ?? c.name;
+    const p = people.get(key) ?? { key, name: c.name, nameEn: c.nameEn, works: [] };
+    p.works.push({
+      slug: e.id,
+      name: e.data.name,
+      type: e.data.type as TypeKey,
+      born: e.data.born,
+    });
+    if (!p.nameEn && c.nameEn) p.nameEn = c.nameEn;
+    people.set(key, p);
+  }
+}
+
+const list = [...people.values()]
+  .map((p) => ({ ...p, works: p.works.sort((a, b) => (a.born ?? 9999) - (b.born ?? 9999)) }))
+  .sort((a, b) => b.works.length - a.works.length || a.name.localeCompare(b.name, 'ja'));
+
+const many = list.filter((p) => p.works.length >= 2);
+const one = list.filter((p) => p.works.length === 1);
+
+// 会社・団体として扱うもの（個人名と分けて見せる）
+const ORGS = new Set(['Anthropic', 'OpenAI', 'Google', 'Meta（当時 Facebook）', 'GitHub', 'マイクロソフト']);
+const orgs = one.filter((p) => ORGS.has(p.name));
+const persons = one.filter((p) => !ORGS.has(p.name));
+---
+<Base title="人物相関図" description="誰がどの技術を作ったか。複数の技術に関わった人のつながり。">
+  <article class="hito">
+    <h1>人物相関図</h1>
+    <p class="lede">
+      図鑑の各ページに書かれた「生みの親」から組み立てています。
+      人物の一覧を別に持たないので、項目を足せばここにも自動で現れます。全 {list.length} 名・団体。
+    </p>
+
+    {many.length > 0 && (
+      <section>
+        <h2>2つ以上に関わった人</h2>
+        <p class="note">同じ人が別の技術にも出てくると、技術どうしが人を介してつながります。</p>
+        <ul class="cards">
+          {many.map((p) => (
+            <li class="card linked">
+              <span class="who">
+                <strong>{p.name}</strong>
+                {p.nameEn && <span class="en">{p.nameEn}</span>}
+              </span>
+              <span class="works">
+                {p.works.map((w) => (
+                  <a href={`${base}zukan/${w.slug}/`} style={`--c: var(--${w.type}); --cbg: var(--${w.type}-bg);`}>
+                    {w.name}{w.born && <span class="y">{w.born}</span>}
+                  </a>
+                ))}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+
+    <section>
+      <h2>その技術を作った人</h2>
+      <ul class="cards">
+        {persons.map((p) => (
+          <li class="card">
+            <span class="who">
+              <strong>{p.name}</strong>
+              {p.nameEn && <span class="en">{p.nameEn}</span>}
+            </span>
+            <span class="works">
+              {p.works.map((w) => (
+                <a href={`${base}zukan/${w.slug}/`} style={`--c: var(--${w.type}); --cbg: var(--${w.type}-bg);`}>
+                  {w.name}{w.born && <span class="y">{w.born}</span>}
+                </a>
+              ))}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    {orgs.length > 0 && (
+      <section>
+        <h2>会社・団体が作ったもの</h2>
+        <ul class="cards">
+          {orgs.map((p) => (
+            <li class="card org">
+              <span class="who"><strong>{p.name}</strong></span>
+              <span class="works">
+                {p.works.map((w) => (
+                  <a href={`${base}zukan/${w.slug}/`} style={`--c: var(--${w.type}); --cbg: var(--${w.type}-bg);`}>
+                    {w.name}{w.born && <span class="y">{w.born}</span>}
+                  </a>
+                ))}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+
+    <p class="caveat">
+      同じ人を同じ人として扱うために、各ページで自前の鍵を付けています。
+      鍵が付いていないと、表記が揺れたときに別人として並びます。
+    </p>
+  </article>
+</Base>
+
+<style>
+  .hito { max-width: 46rem; padding-bottom: 1rem; }
+  h1 { font-size: 1.5rem; margin: .5rem 0 .6rem; }
+  .lede { color: var(--ink-soft); font-size: .9rem; margin: 0 0 2rem; }
+  h2 { font-size: 1.05rem; margin: 2rem 0 .3rem; }
+  .note { color: var(--ink-soft); font-size: .84rem; margin: 0 0 1rem; }
+
+  .cards { list-style: none; margin: 0; padding: 0; display: grid; gap: .6rem; }
+  .card {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
+    padding: .8rem 1rem; display: grid; gap: .5rem;
+  }
+  .card.linked { border-left: 4px solid var(--ink-soft); }
+  .card.org { border-style: dashed; }
+  .who { display: flex; flex-wrap: wrap; gap: .5rem; align-items: baseline; }
+  .who strong { font-size: 1rem; }
+  .en { font-size: .74rem; color: var(--ink-soft); }
+  .works { display: flex; flex-wrap: wrap; gap: .4rem; }
+  .works a {
+    font-size: .82rem; text-decoration: none; color: var(--c);
+    background: var(--cbg); border: 1px solid var(--c); border-radius: 999px;
+    padding: .15rem .7rem; display: inline-flex; gap: .4rem; align-items: baseline;
+  }
+  .works a:hover { text-decoration: underline; }
+  .y { font-size: .7em; opacity: .8; }
+  .caveat { margin-top: 2rem; font-size: .8rem; color: var(--ink-soft); }
+</style>

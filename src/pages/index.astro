@@ -42,6 +42,27 @@ const grouped = TYPE_ORDER.map((t) => ({
   <TownMap items={items} />
   <p class="scrollhint">地図は横にスクロールできます。名前を押すとそのページへ進みます。</p>
 
+  <h2>別の切り口で見る</h2>
+  <p class="note">同じ35項目を、時間・人・場所の並びで見られます。</p>
+  <div class="views">
+    <a href={`${base}nenpyo/`}>
+      <strong>年表</strong>
+      <span>いつ生まれたか。一本の線に並べています</span>
+    </a>
+    <a href={`${base}hitobito/`}>
+      <strong>人物相関図</strong>
+      <span>誰が作ったか。同じ人が何度も出てきます</span>
+    </a>
+    <a href={`${base}sekai/`}>
+      <strong>世界地図</strong>
+      <span>どこで生まれたか。出身地にピンを立てています</span>
+    </a>
+    <a href={`${base}yougo/`}>
+      <strong>用語辞典</strong>
+      <span>デプロイ、プッシュなどの言い回し</span>
+    </a>
+  </div>
+
   <h2>区画ごとの一覧</h2>
   <p class="note">地図を横に動かさずに探したいときはこちらから。</p>
   <div class="zones">
@@ -98,6 +119,18 @@ const grouped = TYPE_ORDER.map((t) => ({
 
   h2 { font-size: 1.15rem; margin: 3rem 0 .3rem; }
   .note { color: var(--ink-soft); font-size: .84rem; margin: 0 0 1rem; }
+  .views { display: grid; gap: .6rem; grid-template-columns: 1fr; margin-bottom: 1rem; }
+  @media (min-width: 640px) { .views { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 960px) { .views { grid-template-columns: repeat(4, 1fr); } }
+  .views a {
+    display: grid; gap: .2rem; text-decoration: none;
+    background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
+    padding: .8rem 1rem;
+  }
+  .views a:hover { border-color: var(--ink-soft); }
+  .views strong { font-size: .95rem; }
+  .views span { font-size: .78rem; color: var(--ink-soft); }
+
   .zones { display: grid; gap: 1rem; grid-template-columns: 1fr; }
   @media (min-width: 640px) { .zones { grid-template-columns: repeat(2, 1fr); } }
   @media (min-width: 960px) { .zones { grid-template-columns: repeat(3, 1fr); } }

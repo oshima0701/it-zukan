@@ -1,0 +1,136 @@
+---
+// 世界地図。出身地にピンを立てる。
+// 地図は正確な形ではなく、位置関係が分かる程度の略図。
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { TYPES, type TypeKey } from '../config';
+
+const base = import.meta.env.BASE_URL;
+const zukan = (await getCollection('zukan')).filter(
+  (e) => !e.data.draft && e.data.birthplace?.lat != null && e.data.birthplace?.lng != null
+);
+
+const W = 820;
+const H = 420;
+// 緯度経度をそのまま平面に置く（正距円筒図法）
+const toX = (lng: number) => ((lng + 180) / 360) * W;
+const toY = (lat: number) => ((90 - lat) / 180) * H;
+
+type Pin = { slug: string; name: string; type: TypeKey; label: string; x: number; y: number };
+const raw: Pin[] = zukan.map((e) => ({
+  slug: e.id,
+  name: e.data.name,
+  type: e.data.type as TypeKey,
+  label: e.data.birthplace!.label,
+  x: toX(e.data.birthplace!.lng!),
+  y: toY(e.data.birthplace!.lat!),
+}));
+
+// 同じ場所に重なるピンをまとめる
+type Group = { x: number; y: number; label: string; pins: Pin[] };
+const groups: Group[] = [];
+for (const p of raw) {
+  const g = groups.find((x) => Math.abs(x.x - p.x) < 12 && Math.abs(x.y - p.y) < 12);
+  if (g) g.pins.push(p);
+  else groups.push({ x: p.x, y: p.y, label: p.label, pins: [p] });
+}
+groups.sort((a, b) => b.pins.length - a.pins.length);
+
+const noPlace = (await getCollection('zukan')).filter(
+  (e) => !e.data.draft && (e.data.birthplace?.lat == null || e.data.birthplace?.lng == null)
+);
+---
+<Base title="世界地図" description="図鑑の技術が生まれた場所に、ピンを立てた地図。">
+  <article class="sekai">
+    <h1>世界地図</h1>
+    <p class="lede">
+      技術が生まれた場所にピンを立てています。全 {raw.length} 件。
+      地図は正確な形ではなく、位置関係が分かる程度の略図です。
+    </p>
+
+    <div class="mapwrap">
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="技術が生まれた場所を示す世界の略図">
+        <rect x="0" y="0" width={W} height={H} rx="10" fill="var(--map-ground)" />
+
+        <g stroke="var(--line)" stroke-width="0.5" opacity="0.6">
+          {[-120, -60, 0, 60, 120].map((lng) => <line x1={toX(lng)} y1="0" x2={toX(lng)} y2={H} />)}
+          {[60, 30, 0, -30, -60].map((lat) => <line x1="0" y1={toY(lat)} x2={W} y2={toY(lat)} />)}
+        </g>
+        <line x1="0" y1={toY(0)} x2={W} y2={toY(0)} stroke="var(--line)" stroke-width="1.2" stroke-dasharray="6 5" />
+        <text x="8" y={toY(0) - 6} font-size="9" fill="var(--ink-soft)">赤道</text>
+
+        <g fill="var(--panel)" stroke="var(--line)" stroke-width="1.5" opacity="0.9">
+          <path d="M120 70 Q150 55 196 62 Q230 58 252 76 Q244 110 214 118 Q222 146 206 168 Q186 190 172 214 Q156 230 148 212 Q140 180 124 150 Q106 120 112 94 Z" />
+          <path d="M196 236 Q214 232 226 246 Q238 268 232 300 Q226 336 212 356 Q200 372 192 352 Q186 320 182 290 Q180 258 196 236 Z" />
+          <path d="M392 66 Q430 54 470 62 Q492 56 506 70 Q498 92 474 100 Q452 108 430 100 Q406 96 392 84 Z" />
+          <path d="M398 110 Q424 104 444 116 Q452 142 442 172 Q430 206 414 232 Q402 246 394 228 Q388 196 390 164 Q390 132 398 110 Z" />
+          <path d="M506 70 Q560 58 620 66 Q680 62 716 84 Q726 108 700 124 Q660 136 620 130 Q572 136 536 122 Q508 110 506 88 Z" />
+          <path d="M700 250 Q736 240 764 258 Q776 284 762 306 Q736 322 710 310 Q692 288 700 250 Z" />
+        </g>
+
+        {groups.map((g) => (
+          <g class="pin">
+            <circle cx={g.x} cy={g.y} r={Math.min(16, 7 + g.pins.length * 1.6)}
+                    fill={`var(--${g.pins[0].type}-bg)`} stroke={`var(--${g.pins[0].type})`} stroke-width="2" />
+            <text x={g.x} y={g.y + 4} font-size="10" text-anchor="middle" fill={`var(--${g.pins[0].type})`}>
+              {g.pins.length}
+            </text>
+          </g>
+        ))}
+      </svg>
+    </div>
+
+    <h2>場所ごとの顔ぶれ</h2>
+    <ul class="places">
+      {groups.map((g) => (
+        <li>
+          <span class="place">{g.label}<span class="count">{g.pins.length}件</span></span>
+          <span class="pins">
+            {g.pins.map((p) => (
+              <a href={`${base}zukan/${p.slug}/`} style={`--c: var(--${p.type}); --cbg: var(--${p.type}-bg);`}>
+                {p.name}<span class="t">{TYPES[p.type].label}</span>
+              </a>
+            ))}
+          </span>
+        </li>
+      ))}
+    </ul>
+
+    {noPlace.length > 0 && (
+      <p class="caveat">
+        出身地を持たない項目（考え方そのものなど）はピンが立ちません。いまは {noPlace.length} 件あります：
+        {noPlace.map((e, i) => <>{i > 0 && '、'}<a href={`${base}zukan/${e.id}/`}>{e.data.name}</a></>)}。
+      </p>
+    )}
+  </article>
+</Base>
+
+<style>
+  .sekai { max-width: 52rem; padding-bottom: 1rem; }
+  h1 { font-size: 1.5rem; margin: .5rem 0 .6rem; }
+  .lede { color: var(--ink-soft); font-size: .9rem; margin: 0 0 1.2rem; }
+  h2 { font-size: 1.05rem; margin: 2rem 0 .8rem; }
+
+  .mapwrap {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 14px;
+    box-shadow: var(--shadow); padding: .6rem; overflow-x: auto;
+  }
+  .mapwrap svg { display: block; width: 100%; min-width: 560px; height: auto; }
+
+  .places { list-style: none; margin: 0; padding: 0; display: grid; gap: .6rem; }
+  .places li {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
+    padding: .7rem 1rem; display: grid; gap: .4rem;
+  }
+  .place { font-size: .88rem; font-weight: 700; display: flex; gap: .6rem; align-items: baseline; }
+  .count { font-size: .72rem; font-weight: 400; color: var(--ink-soft); }
+  .pins { display: flex; flex-wrap: wrap; gap: .4rem; }
+  .pins a {
+    font-size: .82rem; text-decoration: none; color: var(--c);
+    background: var(--cbg); border: 1px solid var(--c); border-radius: 999px;
+    padding: .15rem .7rem; display: inline-flex; gap: .4rem; align-items: baseline;
+  }
+  .pins a:hover { text-decoration: underline; }
+  .t { font-size: .7em; opacity: .85; }
+  .caveat { margin-top: 1.6rem; font-size: .82rem; color: var(--ink-soft); }
+</style>

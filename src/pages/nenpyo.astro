@@ -1,0 +1,118 @@
+---
+// 年表。図鑑の誕生年と、出来事を1本の線に並べる。
+// どちらも frontmatter から取るので、項目を足せばここにも自動で現れる。
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { TYPES, type TypeKey } from '../config';
+
+const base = import.meta.env.BASE_URL;
+
+const zukan = (await getCollection('zukan')).filter((e) => !e.data.draft && e.data.born);
+const events = (await getCollection('events')).filter((e) => !e.data.draft);
+
+type Row = {
+  year: number;
+  kind: 'zukan' | 'event';
+  title: string;
+  note: string;
+  href?: string;
+  type?: TypeKey;
+  eventKind?: string;
+};
+
+const rows: Row[] = [
+  ...zukan.map((e) => ({
+    year: e.data.born as number,
+    kind: 'zukan' as const,
+    title: e.data.name,
+    note: e.data.oneLine,
+    href: `${base}zukan/${e.id}/`,
+    type: e.data.type as TypeKey,
+  })),
+  ...events.map((e) => ({
+    year: e.data.year,
+    kind: 'event' as const,
+    title: e.data.title,
+    note: e.data.summary,
+    eventKind: e.data.kind,
+  })),
+].sort((a, b) => a.year - b.year || a.title.localeCompare(b.title, 'ja'));
+
+const first = rows.length ? rows[0].year : 0;
+const last = rows.length ? rows[rows.length - 1].year : 0;
+
+// 年のかたまりごとに区切る（10年単位）
+const decades: { decade: number; rows: Row[] }[] = [];
+for (const r of rows) {
+  const d = Math.floor(r.year / 10) * 10;
+  const bucket = decades.find((x) => x.decade === d);
+  if (bucket) bucket.rows.push(r);
+  else decades.push({ decade: d, rows: [r] });
+}
+---
+<Base title="年表" description="図鑑に載っている技術の誕生年と、関わる出来事を一本の線に並べたもの。">
+  <article class="nenpyo">
+    <h1>年表</h1>
+    <p class="lede">
+      図鑑の技術が生まれた年と、関わる出来事を一本の線に並べています。
+      {first}年から{last}年まで、全 {rows.length} 件。
+      誕生年の分からない項目（考え方そのものなど）は載りません。
+    </p>
+
+    {decades.map((d) => (
+      <section class="decade">
+        <h2 id={`y${d.decade}`}>{d.decade}年代</h2>
+        <ol class="line">
+          {d.rows.map((r) => (
+            <li class={r.kind} style={r.type ? `--c: var(--${r.type}); --cbg: var(--${r.type}-bg);` : ''}>
+              <span class="year">{r.year}</span>
+              <span class="dot" aria-hidden="true"></span>
+              <span class="body">
+                <span class="title">
+                  {r.href ? <a href={r.href}>{r.title}</a> : r.title}
+                  {r.type && <span class="badge">{TYPES[r.type].label}</span>}
+                  {r.kind === 'event' && <span class="badge ev">出来事</span>}
+                </span>
+                <span class="note">{r.note}</span>
+              </span>
+            </li>
+          ))}
+        </ol>
+      </section>
+    ))}
+  </article>
+</Base>
+
+<style>
+  .nenpyo { max-width: 46rem; padding-bottom: 1rem; }
+  h1 { font-size: 1.5rem; margin: .5rem 0 .6rem; }
+  .lede { color: var(--ink-soft); font-size: .9rem; margin: 0 0 2rem; }
+  h2 { font-size: 1.05rem; margin: 2rem 0 .6rem; color: var(--ink-soft); }
+
+  .line { list-style: none; margin: 0; padding: 0; position: relative; }
+  .line::before {
+    content: ""; position: absolute; left: 4.1rem; top: 0; bottom: 0;
+    width: 2px; background: var(--line);
+  }
+  .line li {
+    display: grid; grid-template-columns: 3.4rem 1.4rem 1fr;
+    align-items: start; gap: .4rem; padding: .5rem 0;
+  }
+  .year { font-size: .82rem; color: var(--ink-soft); text-align: right; padding-top: .1rem; }
+  .dot { position: relative; height: 1.1rem; }
+  .dot::after {
+    content: ""; position: absolute; left: .35rem; top: .35rem;
+    width: .55rem; height: .55rem; border-radius: 50%;
+    background: var(--panel); border: 2px solid var(--c, var(--ink-soft));
+  }
+  li.event .dot::after { border-radius: 2px; border-color: var(--mechanism); }
+  .body { min-width: 0; }
+  .title { display: flex; flex-wrap: wrap; gap: .4rem; align-items: baseline; }
+  .title a { font-weight: 700; }
+  .badge {
+    font-size: .68rem; color: var(--c, var(--ink-soft));
+    background: var(--cbg, var(--line)); border-radius: 999px; padding: .05rem .5rem;
+  }
+  .badge.ev { color: var(--mechanism); background: var(--mechanism-bg); }
+  .note { display: block; font-size: .82rem; color: var(--ink-soft); margin-top: .15rem; }
+</style>
