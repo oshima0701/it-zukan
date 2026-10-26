@@ -8,6 +8,26 @@ import { readdirSync, readFileSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parse as parseYaml } from 'yaml';
+import { execFile } from 'node:child_process';
+import { devNull } from 'node:os';
+import { promisify } from 'node:util';
+
+const run = promisify(execFile);
+
+// Node の通信の作法を拒むサーバーがある（人のブラウザでは普通に開ける）。
+// その場合は curl で確かめ直す。判定を甘くするのではなく、別の手段で確かめる。
+async function curlCheck(url) {
+  try {
+    const { stdout } = await run('curl', [
+      '-s', '-o', devNull, '-w', '%{http_code}', '-L', '--max-time', '20',
+      '-A', 'Mozilla/5.0', url,
+    ], { timeout: 30000 });
+    const code = Number(String(stdout).trim());
+    return { ok: code >= 200 && code < 400, status: code, viaCurl: true };
+  } catch {
+    return null;
+  }
+}
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const dirs = ['src/content/zukan', 'src/content/events', 'src/content/notes', 'src/content/terms'];
@@ -39,7 +59,7 @@ for (const d of dirs) {
 
 if (urls.size === 0) { console.log('確かめるリンクがありません。'); process.exit(0); }
 
-const check = async (url) => {
+const once = async (url) => {
   const opts = {
     redirect: 'follow',
     headers: { 'user-agent': 'Mozilla/5.0 (link check for a personal site)' },
@@ -58,6 +78,17 @@ const check = async (url) => {
   } catch (e) {
     return { ok: false, status: e.name === 'TimeoutError' ? '時間切れ' : e.message };
   }
+};
+
+// 通信は一度きり失敗することがある。1回だけ置いて試し直してから判定する。
+const check = async (url) => {
+  const first = await once(url);
+  if (first.ok) return first;
+  await new Promise((r) => setTimeout(r, 1500));
+  const second = await once(url);
+  if (second.ok) return second;
+  const byCurl = await curlCheck(url);
+  return byCurl ?? second;
 };
 
 const list = [...urls.keys()];
