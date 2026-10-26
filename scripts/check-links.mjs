@@ -10,7 +10,7 @@ import { fileURLToPath } from 'node:url';
 import { parse as parseYaml } from 'yaml';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const dirs = ['src/content/zukan', 'src/content/events', 'src/content/notes'];
+const dirs = ['src/content/zukan', 'src/content/events', 'src/content/notes', 'src/content/terms'];
 
 const urls = new Map(); // url -> [どのファイルで使われているか]
 

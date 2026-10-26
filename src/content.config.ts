@@ -89,4 +89,20 @@ const notes = defineCollection({
   }),
 });
 
-export const collections = { zukan, events, notes };
+const terms = defineCollection({
+  loader: glob({ base: './src/content/terms', pattern: '**/*.md' }),
+  schema: z.object({
+    name: z.string(),
+    reading: z.string(),
+    oneLine: z.string(),
+    // 図鑑の項目（技術そのもの）ではなく、現場で飛び交う言い回しを集める
+    category: z.enum(['git', 'deploy', 'dev', 'ai', 'web']),
+    aliases: z.array(z.string()).default([]),
+    related: z.array(z.string()).default([]),
+    sources: z.array(source).min(1),
+    updated: z.coerce.date(),
+    draft: z.boolean().default(false),
+  }),
+});
+
+export const collections = { zukan, events, notes, terms };

@@ -1,0 +1,85 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+
+const CATEGORIES = [
+  { key: 'git', label: '記録と共有', blurb: 'Git や GitHub まわりで飛び交う言葉' },
+  { key: 'deploy', label: '動かす・出す', blurb: '作ったものを世に出すときの言葉' },
+  { key: 'dev', label: '作る途中', blurb: '開発の最中に出てくる言葉' },
+  { key: 'web', label: 'Webまわり', blurb: 'サイトやサービスの話で出てくる言葉' },
+  { key: 'ai', label: 'AIまわり', blurb: 'AIを使うときに出てくる言葉' },
+];
+
+const all = (await getCollection('terms')).filter((e) => !e.data.draft);
+const rendered = await Promise.all(
+  all.map(async (e) => ({ entry: e, Content: (await render(e)).Content }))
+);
+rendered.sort((a, b) => a.entry.data.name.localeCompare(b.entry.data.name, 'ja'));
+
+const groups = CATEGORIES
+  .map((c) => ({ ...c, items: rendered.filter((x) => x.entry.data.category === c.key) }))
+  .filter((g) => g.items.length > 0);
+---
+<Base title="用語辞典" description="デプロイ、プッシュ、プルなど、現場で飛び交う言い回しの説明。">
+  <article class="yougo">
+    <h1>用語辞典</h1>
+    <p class="lede">
+      図鑑には載せていない、動作や状態を表す言い回しを集めています。
+      図鑑のページに出てきた言葉は、ここへ飛んできます。全 {rendered.length} 語。
+    </p>
+
+    <nav class="jump" aria-label="分類へ飛ぶ">
+      {groups.map((g) => <a href={"#cat-" + g.key}>{g.label}（{g.items.length}）</a>)}
+    </nav>
+
+    {groups.map((g) => (
+      <section class="cat">
+        <h2 id={"cat-" + g.key}>{g.label}</h2>
+        <p class="cat-blurb">{g.blurb}</p>
+        <dl>
+          {g.items.map((x) => (
+            <div class="term" id={x.entry.id}>
+              <dt>
+                <span class="name">{x.entry.data.name}</span>
+                <span class="reading">{x.entry.data.reading}</span>
+              </dt>
+              <dd>
+                <p class="one">{x.entry.data.oneLine}</p>
+                <div class="detail"><x.Content /></div>
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+    ))}
+  </article>
+</Base>
+
+<style>
+  .yougo { max-width: 46rem; padding-bottom: 1rem; }
+  h1 { font-size: 1.5rem; margin: .5rem 0 .6rem; }
+  .lede { color: var(--ink-soft); font-size: .9rem; margin: 0 0 1.2rem; }
+  .jump { display: flex; flex-wrap: wrap; gap: .4rem; margin: 0 0 2rem; }
+  .jump a {
+    font-size: .8rem; text-decoration: none; color: var(--ink-soft);
+    border: 1px solid var(--line); border-radius: 999px; padding: .2rem .7rem;
+    background: var(--panel);
+  }
+  .jump a:hover { color: var(--ink); border-color: var(--ink-soft); }
+  h2 { font-size: 1.1rem; margin: 2.2rem 0 .2rem; }
+  .cat-blurb { color: var(--ink-soft); font-size: .84rem; margin: 0 0 1rem; }
+  dl { margin: 0; display: grid; gap: .8rem; }
+  .term {
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: 10px; padding: .9rem 1.1rem; scroll-margin-top: 1.5rem;
+  }
+  .term:target { border-color: var(--ink-soft); }
+  dt { display: flex; flex-wrap: wrap; gap: .5rem; align-items: baseline; margin-bottom: .3rem; }
+  .name { font-weight: 700; font-size: 1.02rem; }
+  .reading { font-size: .74rem; color: var(--ink-soft); }
+  dd { margin: 0; }
+  .one { margin: 0 0 .5rem; font-size: .92rem; }
+  .detail { font-size: .88rem; color: var(--ink-soft); }
+  .detail :global(p) { margin: 0 0 .6rem; }
+  .detail :global(p:last-child) { margin-bottom: 0; }
+</style>

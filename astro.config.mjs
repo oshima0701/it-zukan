@@ -16,7 +16,7 @@ export default defineConfig({
   integrations: [mdx(), sitemap()],
   markdown: {
     // 本文の用語を図鑑内の該当ページへ自動でつなぐ（手書きのリンクは不要）
-    rehypePlugins: [[rehypeZukanLinks, { entries: collectTerms(), base: BASE }]],
+    rehypePlugins: [[rehypeZukanLinks, { entries: collectTerms(BASE), base: BASE }]],
   },
   build: {
     // CSSをHTMLに埋め込む。1枚のファイルだけ渡しても見た目が崩れない。

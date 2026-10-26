@@ -22,13 +22,15 @@ const asciiEdge = /[0-9A-Za-z_-]/;
 export default function rehypeZukanLinks({ entries = [], base = '/' } = {}) {
   const terms = [];
   for (const e of entries) {
-    for (const t of e.terms) if (t && t.length >= 2) terms.push({ term: t, slug: e.slug });
+    const key = e.key ?? ('zukan:' + e.slug);
+    const href = e.href ?? `${base}zukan/${e.slug}/`;
+    for (const t of e.terms) if (t && t.length >= 2) terms.push({ term: t, key, href });
   }
   terms.sort((a, b) => b.term.length - a.term.length);
   if (terms.length === 0) return () => {};
 
   const pattern = new RegExp(terms.map((t) => escapeRe(t.term)).join('|'), 'g');
-  const slugOf = new Map(terms.map((t) => [t.term, t.slug]));
+  const targetOf = new Map(terms.map((t) => [t.term, t]));
 
   return (tree, file) => {
     const path = String(file?.history?.[0] ?? file?.path ?? '');
@@ -54,8 +56,9 @@ export default function rehypeZukanLinks({ entries = [], base = '/' } = {}) {
         let m;
         while ((m = pattern.exec(text)) !== null) {
           const term = m[0];
-          const slug = slugOf.get(term);
-          if (!slug || slug === selfSlug || linked.has(slug)) continue;
+          const target = targetOf.get(term);
+          if (!target) continue;
+          if (target.key === 'zukan:' + selfSlug || linked.has(target.key)) continue;
 
           if (isAsciiWord(term)) {
             const before = text[m.index - 1];
@@ -68,10 +71,10 @@ export default function rehypeZukanLinks({ entries = [], base = '/' } = {}) {
           out.push({
             type: 'element',
             tagName: 'a',
-            properties: { href: `${base}zukan/${slug}/`, className: ['zukan-link'] },
+            properties: { href: target.href, className: ['zukan-link'] },
             children: [{ type: 'text', value: term }],
           });
-          linked.add(slug);
+          linked.add(target.key);
           last = m.index + term.length;
         }
 
