@@ -1,0 +1,30 @@
+---
+// エージェントが回す輪。読む→直す→動かす→結果を見る。
+---
+<svg viewBox="0 0 400 220" role="img" aria-label="ファイルを読み、書き換え、実際に動かし、結果を見てまた直す、という輪を自分で回す図">
+  <g fill="var(--ai-bg)" stroke="var(--ai)" stroke-width="2">
+    <rect x="140" y="14" width="120" height="40" rx="8"/>
+    <rect x="268" y="90" width="120" height="40" rx="8"/>
+    <rect x="140" y="166" width="120" height="40" rx="8"/>
+    <rect x="12" y="90" width="120" height="40" rx="8"/>
+  </g>
+  <g font-size="11" text-anchor="middle" fill="var(--ai)">
+    <text x="200" y="39">1. 読む</text>
+    <text x="328" y="115">2. 直す</text>
+    <text x="200" y="191">3. 動かす</text>
+    <text x="72" y="115">4. 結果を見る</text>
+  </g>
+  <g stroke="var(--ai)" stroke-width="2" fill="none" marker-end="url(#ag)">
+    <path d="M262 40 Q320 48 326 86"/>
+    <path d="M326 134 Q320 176 264 186"/>
+    <path d="M138 186 Q80 176 74 134"/>
+    <path d="M74 86 Q80 48 138 40"/>
+  </g>
+  <text x="200" y="118" font-size="10" text-anchor="middle" fill="var(--ink-soft)">人の確認なしで</text>
+  <text x="200" y="134" font-size="10" text-anchor="middle" fill="var(--ink-soft)">何周も回る</text>
+  <defs>
+    <marker id="ag" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--ai)"/>
+    </marker>
+  </defs>
+</svg>
