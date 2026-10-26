@@ -1,0 +1,45 @@
+---
+// ページが見つからなかったときに出る案内。
+// GitHub Pages は、無い住所に来た人にこのページを返す。
+import Base from '../layouts/Base.astro';
+const base = import.meta.env.BASE_URL;
+---
+<Base title="ページが見つかりません" description="お探しのページは見つかりませんでした。">
+  <article class="nf">
+    <p class="code">404</p>
+    <h1>そのページはありません</h1>
+    <p class="lede">
+      住所が違っているか、まだ書いていない項目かもしれません。
+      下のどれかから入り直してください。
+    </p>
+
+    <ul class="ways">
+      <li><a href={base}>町の地図（トップ）</a><span>どこから読むか迷ったらここから</span></li>
+      <li><a href={`${base}zukan/`}>図鑑一覧</a><span>名前やタイプで探せます</span></li>
+      <li><a href={`${base}yougo/`}>用語辞典</a><span>デプロイ、プッシュなどの言い回し</span></li>
+      <li><a href={`${base}about/`}>この図鑑について</a><span>出典や更新日の扱い</span></li>
+    </ul>
+
+    <p class="note">
+      このサイトの入口は <code>{base}</code> から始まります。
+      ここより手前の住所には、何も置いていません。
+    </p>
+  </article>
+</Base>
+
+<style>
+  .nf { max-width: var(--measure); padding: 2rem 0 1rem; }
+  .code { margin: 0; font-size: 3rem; line-height: 1; color: var(--ink-soft); }
+  h1 { font-size: 1.4rem; margin: .4rem 0 .8rem; }
+  .lede { color: var(--ink-soft); font-size: .92rem; margin: 0 0 1.6rem; }
+  .ways { list-style: none; margin: 0 0 1.8rem; padding: 0; display: grid; gap: .6rem; }
+  .ways li {
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: 10px; padding: .7rem 1rem;
+    display: flex; flex-wrap: wrap; gap: .3rem 1rem; align-items: baseline;
+  }
+  .ways a { font-weight: 700; }
+  .ways span { font-size: .8rem; color: var(--ink-soft); }
+  .note { font-size: .82rem; color: var(--ink-soft); }
+  code { font-size: .9em; }
+</style>

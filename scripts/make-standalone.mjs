@@ -25,6 +25,10 @@ function htmlFiles(dir) {
 
 let changed = 0;
 for (const file of htmlFiles(dist)) {
+  // 404 は「無い住所」に対してどの深さからでも返されるので、相対パスにできない。
+  // ここだけは公開先の住所をそのまま残す。
+  if (relative(dist, file) === '404.html') continue;
+
   const depth = relative(dist, dirname(file)).split(sep).filter(Boolean).length;
   const prefix = depth === 0 ? './' : '../'.repeat(depth);
   let html = readFileSync(file, 'utf8');
