@@ -1,0 +1,129 @@
+---
+no: 19
+name: JavaScript
+reading: じゃばすくりぷと
+type: language
+oneLine: ページを動かすための言語。ブラウザの中で動く。
+surprise: >
+  JavaScript は Java とほぼ無関係です。
+  当時 Java が流行していたので、あやかって名前を変えた、という経緯があります。
+takeaway: >
+  10日で作られた言語が、30年たってもWebの標準のまま動いています。その無理が、いまも癖として残っています。
+status:
+  difficulty: 3
+  popularity: 5
+  breadth: 5
+order: 190
+updated: 2026-10-26
+born: 1995
+bornNote: 最初の実装は約10日で書かれたと伝えられる
+creators:
+  - name: ブレンダン・アイク
+    nameEn: Brendan Eich
+    personId: brendan-eich
+birthplace:
+  label: アメリカ・カリフォルニア州（Netscape）
+  lat: 37.39
+  lng: -122.08
+mascot:
+  name: なし
+officialUrl: https://developer.mozilla.org/ja/docs/Web/JavaScript
+aliases: [JS, ジャバスクリプト]
+related:
+  - slug: html
+    relation: partner
+    note: 動かす相手
+  - slug: npm
+    relation: descendant
+    note: 部品を集める道具
+sources:
+  - id: 1
+    title: JavaScript - MDN Web Docs
+    url: https://developer.mozilla.org/ja/docs/Web/JavaScript
+    accessed: 2026-10-26
+  - id: 2
+    title: JavaScript - Wikipedia
+    url: https://en.wikipedia.org/wiki/JavaScript
+    accessed: 2026-10-26
+  - id: 3
+    title: Brendan Eich - Wikipedia
+    url: https://en.wikipedia.org/wiki/Brendan_Eich
+    accessed: 2026-10-26
+---
+
+{/* block: birth */}
+## なぜ10日で作らなければならなかったのか？
+
+1995年、ブラウザを作っていた Netscape 社には急ぎの事情がありました。ページに簡単な動きを付けられる言語を、次の版に間に合わせたい。
+
+ブレンダン・アイクが、その役を引き受けます。**最初の実装は10日ほどで書かれた**と伝えられています<Cite n={2} />。
+
+10日です。設計をじっくり練る時間はありませんでした。そして、その急ごしらえの言語が、以後30年にわたってWebの標準であり続けています。直したくても、世界中のページが動かなくなるので直せない。いまも残る独特の癖の多くは、この経緯に由来します<Cite n={2} />。
+
+{/* block: naming */}
+## 名前の由来：流行にあやかった改名
+
+開発中の名前は Mocha、次に LiveScript、そして JavaScript になりました<Cite n={2} />。
+
+当時 Java という言語が大変な人気でした。その名前を借りれば注目される、という判断です<Cite n={2} />。
+
+結果として、30年にわたる誤解を生みました。**Java と JavaScript は別物です。** 文法も、動く場所も、作った会社も違います。「ハムとハムスターくらい違う」という説明がよく使われます。
+
+{/* block: analogy */}
+## たとえ話：建てたあとに増築し続けた家
+
+10日で建てた家に、30年ぶんの増築を重ねたと思ってください。
+
+便利な部屋が次々に足され、いまでは立派な家です。ただし、最初の柱は抜けません。抜くと住んでいる人が困るからです。だから、新しい部屋の立派さと、古い柱の妙な位置が同居しています。
+
+新しい書き方を覚えれば快適に使えます。ただ、ときどき古い柱に頭をぶつけます。
+
+{/* block: figure */}
+## どこで動くのか
+
+<Figure name="js-where" caption="サーバーから届いたあと、見ている人のブラウザの中で動きます。だから、押した・入力したに即座に応えられます" />
+
+{/* block: skills */}
+## 最初に覚える3つ
+
+| 書き方 | 意味 |
+|---|---|
+| `const 名前 = 値;` | 名前を付けて値をしまう |
+| `document.querySelector("#id")` | ページの中の要素を1つ選ぶ |
+| `要素.addEventListener("click", 関数)` | 押されたときにすることを決める |
+
+3つめが JavaScript の本領です。「何かが起きたら、これをする」。この形でページに動きが生まれます<Cite n={1} />。
+
+{/* block: you */}
+## あなたとの関係
+
+ネット通販で数量を変えると合計金額がすぐ変わる。入力欄に赤く「必須です」と出る。地図を指でドラッグすると動く。全部これです。
+
+ページを読み込み直さずに画面が変わったら、その裏で動いています。
+
+{/* block: internet */}
+## ネットでの扱われ方
+
+`typeof null` と書くと `"object"` と返ってきます。これは誕生時からの不具合として知られていますが、直すと既存のページが壊れるため、そのまま残されています<Cite n={2} />。
+
+もうひとつ有名なのは、部品を取り込むフォルダ `node_modules` が巨大になること。「宇宙で最も重い物体」という冗談が定番になっています。小さな部品が互いを必要とし合った結果です。
+
+{/* block: misunderstanding */}
+## よくある誤解：Java の簡易版
+
+無関係です。名前を借りただけで、言語としての親子関係はありません<Cite n={2} />。
+
+ついでに言うと、作者のブレンダン・アイクはもともと別の種類の言語を作るつもりでした<Cite n={3} />。Java に似せろという指示が外から来たという経緯が記録されています。名前も見た目も、技術的な理由ではなく営業上の理由で決まりました。
+
+{/* block: firststep */}
+## 今日5分でできること
+
+どのページでもいいので `F12` を押し、「コンソール」を開いてください。そこに `1 + 1` と打って Enter。`2` と返ってきます。
+
+次に `document.body.style.background = "pink"` と打ってみてください。ページが一瞬でピンクになります。読み込み直せば戻ります。
+
+{/* block: materials */}
+## 無料教材
+
+- [JavaScript - MDN Web Docs](https://developer.mozilla.org/ja/docs/Web/JavaScript)（無料・日本語）
+- [JavaScript 初心者向けガイド - MDN](https://developer.mozilla.org/ja/docs/Learn_web_development/Core/Scripting)（無料・日本語）

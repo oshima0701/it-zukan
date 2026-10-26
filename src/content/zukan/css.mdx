@@ -1,0 +1,130 @@
+---
+no: 18
+name: CSS
+reading: しーえすえす
+type: language
+oneLine: Webページの見た目を決めるための決まり。
+surprise: >
+  CSS の「カスケード」とは、水が段々に落ちる滝のことです。
+  複数の指定がぶつかったとき、どれが勝つかを決める順番が、滝の流れにたとえられています。
+takeaway: >
+  CSS で迷ったら、たいていは「どの指定が勝っているか」の問題です。見た目ではなく、優先順位を疑ってください。
+status:
+  difficulty: 3
+  popularity: 5
+  breadth: 4
+order: 180
+updated: 2026-10-26
+born: 1996
+bornNote: 提案は1994年、最初の仕様は1996年
+creators:
+  - name: ホーコン・ウィウム・リー
+    nameEn: Hakon Wium Lie
+    personId: hakon-wium-lie
+birthplace:
+  label: スイス・ジュネーブ（CERN）
+  lat: 46.23
+  lng: 6.05
+mascot:
+  name: なし
+officialUrl: https://developer.mozilla.org/ja/docs/Web/CSS
+aliases: [シーエスエス, スタイルシート]
+related:
+  - slug: html
+    relation: partner
+    note: 骨組みを受け持つ相手
+sources:
+  - id: 1
+    title: CSS - MDN Web Docs
+    url: https://developer.mozilla.org/ja/docs/Web/CSS
+    accessed: 2026-10-26
+  - id: 2
+    title: Cascading Style Sheets - Wikipedia
+    url: https://en.wikipedia.org/wiki/CSS
+    accessed: 2026-10-26
+  - id: 3
+    title: カスケードと継承 - MDN Web Docs
+    url: https://developer.mozilla.org/ja/docs/Learn_web_development/Core/Styling_basics/Handling_conflicts
+    accessed: 2026-10-26
+---
+
+{/* block: birth */}
+## なぜ見た目を別のファイルに分けたのか？
+
+初期の Web では、見た目の指定を HTML の中に直接書いていました。文字を赤くしたければ、その場所に赤くする印を書く。
+
+これが破綻します。1000ページあるサイトで、色を変えたくなったら1000か所を直すことになるからです。
+
+1994年、ホーコン・ウィウム・リーが、見た目の指定を別にまとめる案を出しました<Cite n={2} />。1996年に最初の仕様がまとまります<Cite n={2} />。骨組みと見た目を分けたことで、1か所直せば全ページに反映されるようになりました。
+
+{/* block: naming */}
+## 名前の由来：段々に落ちる滝
+
+CSS は Cascading Style Sheets の頭文字です<Cite n={1} />。
+
+**Cascading（カスケード）** は、水が段々になって落ちる滝のことです。なぜ滝なのか。CSS では、同じ場所に対する指定が複数ぶつかることが前提になっているからです。
+
+ブラウザの初期設定、サイト全体の指定、そのページだけの指定、特定の要素だけの指定。これらが滝のように上から落ちてきて、最後に残った1つが勝ちます<Cite n={3} />。どれが勝つかの順番が決まっているので、ぶつかっても結果が一定になります。
+
+名前そのものが、この言語のいちばん難しい部分を指しています。
+
+{/* block: analogy */}
+## たとえ話：服装の決まり
+
+会社の服装規定があり、部署のルールがあり、今日の自分の気分がある。ぶつかったときは、より近い・より具体的な決まりが勝ちます。
+
+CSS も同じです。「このページの全部の文字は黒」と書いてあっても、「この段落だけは赤」と書けばそちらが勝ちます。より具体的に指しているほうが強い、という決まりです。
+
+思ったとおりに表示されないとき、たいていは「もっと具体的な、別の指定が勝っている」だけです。
+
+{/* block: figure */}
+## 同じ骨組みに、違う見た目
+
+<Figure name="html-css" caption="左の骨組みは変えずに、CSS だけで右のような見た目にできます。骨組みと見た目を分けておく利点がこれです" />
+
+{/* block: skills */}
+## 最初に覚える3つ
+
+| 書き方 | 意味 |
+|---|---|
+| `color: red;` | 文字の色 |
+| `background: white;` | 背景の色 |
+| `padding: 1rem;` | 中身と枠のあいだの余白 |
+
+3つめの余白が、見た目の印象をいちばん左右します。色よりも、余白の取り方のほうが「整って見えるかどうか」を決めます。
+
+{/* block: you */}
+## あなたとの関係
+
+社内のシステムやブログの管理画面に「カスタムCSS」という欄を見たことがあるかもしれません。あそこに1行書くだけで、見た目を変えられます。
+
+印刷したときだけレイアウトを変える、という指定もできます。画面では3段組み、紙では1段組み。そういう使い分けも CSS の仕事です。
+
+{/* block: internet */}
+## ネットでの扱われ方
+
+「CSS is awesome」と書かれたマグカップが有名です。文字が枠からはみ出した状態で印刷されていて、枠の中に収めるのに苦労する CSS あるあるを自嘲したジョークグッズです。
+
+CSS は「簡単そうに見えて思いどおりにならない」代表格として、長くネタにされてきました。
+
+{/* block: misunderstanding */}
+## よくある誤解：とりあえず `!important` を付ければ解決する
+
+その場は解決しますが、先に進むほど苦しくなります。
+
+`!important` は、優先順位の決まりを力づくで飛び越える指定です。使うと、次に困ったときにそれを超える手段がもう無くなります。ぶつかりを解くのではなく、ぶつかりを見えなくしているだけです。
+
+まずは「なぜ負けているのか」を調べるほうが、結局は早く済みます。
+
+{/* block: firststep */}
+## 今日5分でできること
+
+どのページでもいいので開いて、`F12` を押してください。開発者ツールが出ます。
+
+要素を選ぶと、その要素に効いている CSS が一覧で出て、**負けている指定には取り消し線が引かれています**。これが「ぶつかって、どれかが勝っている」の現物です。
+
+{/* block: materials */}
+## 無料教材
+
+- [CSS - MDN Web Docs](https://developer.mozilla.org/ja/docs/Web/CSS)（無料・日本語）
+- [カスケードと継承 - MDN](https://developer.mozilla.org/ja/docs/Learn_web_development/Core/Styling_basics/Handling_conflicts)（無料・日本語）

@@ -1,0 +1,25 @@
+---
+// JavaScript がどこで動くか。読み込んだ側で動く。
+---
+<svg viewBox="0 0 440 180" role="img" aria-label="サーバーから届いたあと、見ている人のブラウザの中で動くという図">
+  <rect x="14" y="54" width="130" height="70" rx="10" fill="var(--panel)" stroke="var(--line)" stroke-width="2"/>
+  <text x="79" y="84" font-size="11" text-anchor="middle" fill="var(--ink)">サーバー</text>
+  <text x="79" y="104" font-size="10" text-anchor="middle" fill="var(--ink-soft)">置いてあるだけ</text>
+
+  <path d="M150 89 L212 89" stroke="var(--ink-soft)" stroke-width="2" marker-end="url(#jw)"/>
+  <text x="181" y="78" font-size="9" text-anchor="middle" fill="var(--ink-soft)">届く</text>
+
+  <rect x="218" y="40" width="208" height="98" rx="10" fill="var(--language-bg)" stroke="var(--language)" stroke-width="2"/>
+  <text x="322" y="64" font-size="11" text-anchor="middle" fill="var(--language)">見ている人のブラウザ</text>
+  <rect x="238" y="76" width="168" height="46" rx="6" fill="var(--panel)" stroke="var(--language)" stroke-width="1.5"/>
+  <text x="322" y="96" font-size="11" text-anchor="middle" fill="var(--ink)">ここで動く</text>
+  <text x="322" y="113" font-size="9" text-anchor="middle" fill="var(--ink-soft)">押した・入力した に反応する</text>
+
+  <text x="220" y="166" font-size="10" text-anchor="middle" fill="var(--ink-soft)">だから、見ている人の手元で起きたことに即座に応えられる</text>
+
+  <defs>
+    <marker id="jw" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--ink-soft)"/>
+    </marker>
+  </defs>
+</svg>

@@ -1,0 +1,134 @@
+---
+no: 17
+name: HTML
+reading: えいちてぃーえむえる
+type: language
+oneLine: Webページの骨組みを書くための決まり。
+surprise: >
+  Webの企画書を受け取った上司の反応は「あいまいだが面白い」でした。
+  その手書きの書き込みが残っている紙が、世界で最初のWebの提案書です。
+takeaway: >
+  HTML が決めているのは見た目ではなく「これは見出し」「これは段落」という意味です。見た目は CSS の仕事です。
+status:
+  difficulty: 1
+  popularity: 5
+  breadth: 5
+order: 170
+updated: 2026-10-26
+born: 1991
+bornNote: 提案は1989年、最初の公開文書は1991年
+creators:
+  - name: ティム・バーナーズ＝リー
+    nameEn: Tim Berners-Lee
+    personId: tim-berners-lee
+birthplace:
+  label: スイス・ジュネーブ（CERN）
+  lat: 46.23
+  lng: 6.05
+mascot:
+  name: なし
+officialUrl: https://developer.mozilla.org/ja/docs/Web/HTML
+aliases: [エイチティーエムエル]
+related:
+  - slug: css
+    relation: partner
+    note: 見た目を受け持つ相手
+sources:
+  - id: 1
+    title: Information Management：A Proposal（1989年の提案書、CERN）
+    url: https://cds.cern.ch/record/369245/files/dd-89-001.pdf
+    accessed: 2026-10-26
+  - id: 2
+    title: HTML - MDN Web Docs
+    url: https://developer.mozilla.org/ja/docs/Web/HTML
+    accessed: 2026-10-26
+  - id: 3
+    title: 世界初のウェブサイト（復元版）
+    url: https://info.cern.ch/hypertext/WWW/TheProject.html
+    accessed: 2026-10-26
+---
+
+{/* block: birth */}
+## 「あいまいだが面白い」と書かれた紙から
+
+1989年、スイスの研究所 CERN で働いていたティム・バーナーズ＝リーが、1本の提案書を書きました<Cite n={1} />。研究所の中に散らばった情報を、互いに結びつけて辿れるようにしよう、という内容です。
+
+上司はその紙に「Vague but exciting（あいまいだが面白い）」と書き込みました。却下でも承認でもない、この一言から Web が始まります。
+
+1991年には最初のWebサイトが公開されました。そのページは、いまも同じ場所で読めます<Cite n={3} />。30年以上前の文書が、いまのブラウザでそのまま開く。これは HTML が後方互換を保ち続けてきた結果でもあります。
+
+{/* block: naming */}
+## 名前の由来：ハイパーなテキストに、印を付ける言語
+
+HTML は HyperText Markup Language の頭文字です<Cite n={2} />。
+
+- **HyperText（ハイパーテキスト）** — 別の文書へ飛べる文書。この「飛べる」がWebの核心です
+- **Markup（マークアップ）** — 文章に印を付けること。もとは印刷所で、原稿に「ここは見出し」と赤を入れる作業を指しました
+- **Language（言語）** — その印の付け方の決まり
+
+つまり HTML は「飛べる文章に、ここは何かという印を付けるための決まり」です。プログラミング言語ではなく、印の付け方の約束です。
+
+{/* block: analogy */}
+## たとえ話：原稿に入れる赤字
+
+紙の原稿に「ここは大見出し」「ここは引用」と赤を入れる作業を思い浮かべてください。赤を入れる人は、文字の大きさや色までは決めません。それは印刷所の仕事です。
+
+HTML も同じです。`<h1>` と書くのは「ここは一番大きな見出しです」という意味の指定であって、「24ポイントの太字で」という指定ではありません。見た目は [CSS](/zukan/css/) が決めます。
+
+この分担を知らないまま HTML で見た目を整えようとすると、必ず行き詰まります。
+
+{/* block: figure */}
+## 骨組みと見た目は別の仕事
+
+<Figure name="html-css" caption="左が HTML の決めている範囲。どこが見出しで、どこが段落か。右の見た目は CSS が決めます" />
+
+{/* block: skills */}
+## 最初に覚える3つ
+
+| 書き方 | 意味 |
+|---|---|
+| `<h1>見出し</h1>` | ここは見出しです |
+| `<p>文章</p>` | ここはひとつの段落です |
+| `<a href="行き先">文字</a>` | ここを押すと行き先へ飛びます |
+
+3つめがWebそのものです。文書と文書が互いに飛べること。これだけが、ほかの文書形式との決定的な違いでした。
+
+{/* block: you */}
+## あなたとの関係
+
+いま読んでいるこのページも HTML です。ブラウザで右クリックして「ページのソースを表示」を選ぶと、中身が見えます。
+
+メールの署名が崩れる、社内システムの入力欄が妙な動きをする。こうしたとき、HTML の形が分かると原因の当たりがつきます。
+
+{/* block: internet */}
+## ネットでの扱われ方
+
+「HTML はプログラミング言語か」という論争が、定期的に燃えます。
+
+厳密には違います。条件分岐も繰り返しもなく、計算をしません。ただ、この議論が繰り返されるのは、線引きそのものより「できる人・できない人」の線引きに使われがちだからです。名乗り方を気にするより、書けることのほうが実利があります。
+
+{/* block: misunderstanding */}
+## よくある誤解：見た目を整えるための言語
+
+違います。HTML が指定しているのは意味です。
+
+`<h1>` が大きく表示されるのは、ブラウザが初期設定でそう表示しているだけです。この意味づけは、目の見えない人が使う読み上げソフトにとっては生命線になります。見出しとして印が付いていれば飛ばし読みができますが、ただ大きい文字では区別がつきません。
+
+{/* block: firststep */}
+## 今日5分でできること
+
+メモ帳を開いて次の3行を書き、`test.html` という名前で保存してください。
+
+```html
+<h1>はじめてのページ</h1>
+<p>これは段落です。</p>
+<a href="https://info.cern.ch/hypertext/WWW/TheProject.html">世界初のサイトへ</a>
+```
+
+ダブルクリックするとブラウザで開きます。リンクを押すと、1991年に戻れます。
+
+{/* block: materials */}
+## 無料教材
+
+- [HTML - MDN Web Docs](https://developer.mozilla.org/ja/docs/Web/HTML)（無料・日本語）
+- [HTML の基本 - MDN](https://developer.mozilla.org/ja/docs/Learn_web_development/Getting_started/Your_first_website)（無料・日本語）

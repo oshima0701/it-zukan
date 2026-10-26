@@ -1,0 +1,132 @@
+---
+no: 21
+name: SQL
+reading: えすきゅーえる
+type: language
+oneLine: たまったデータから、欲しいものを取り出すための言語。
+surprise: >
+  SQL はもともと SEQUEL という名前でした。
+  その名前が他社の商標とぶつかったため、母音を落として SQL になりました。
+  読み方が「エスキューエル」と「シークェル」に割れているのは、この名残です。
+takeaway: >
+  SQL は「どう取り出すか」ではなく「何が欲しいか」を書く言語です。手順ではなく注文書を書きます。
+status:
+  difficulty: 3
+  popularity: 5
+  breadth: 4
+order: 210
+updated: 2026-10-26
+born: 1974
+bornNote: IBM の研究所で考案
+creators:
+  - name: ドナルド・チェンバリン
+    nameEn: Donald D. Chamberlin
+    personId: donald-chamberlin
+  - name: レイモンド・ボイス
+    nameEn: Raymond F. Boyce
+    personId: raymond-boyce
+birthplace:
+  label: アメリカ・カリフォルニア州（IBM サンノゼ研究所）
+  lat: 37.20
+  lng: -121.75
+mascot:
+  name: なし
+aliases: [シークェル, エスキューエル]
+related:
+  - slug: sqlite
+    relation: partner
+    note: これを使う相手
+  - slug: mysql
+    relation: partner
+    note: これを使う相手
+sources:
+  - id: 1
+    title: SQL - Wikipedia
+    url: https://en.wikipedia.org/wiki/SQL
+    accessed: 2026-10-26
+  - id: 2
+    title: SQL 入門 - MDN Web Docs 用語集
+    url: https://developer.mozilla.org/ja/docs/Glossary/SQL
+    accessed: 2026-10-26
+  - id: 3
+    title: Exploits of a Mom（xkcd 327、通称ボビー・テーブルズ）
+    url: https://xkcd.com/327/
+    accessed: 2026-10-26
+---
+
+{/* block: birth */}
+## なぜ「手順」ではなく「注文」を書く形にしたのか？
+
+1970年代、IBM の研究所で、データを表の形で扱う考え方が生まれます。その表を操作するための言語として作られたのが SQL です<Cite n={1} />。
+
+当時の発想として新しかったのは、**手順を書かせないこと**でした。「最初のページから順に読んで、条件に合う行を拾い、それを並べ替えて」とは書きません。「営業部の人の名前がほしい」とだけ書きます。
+
+どう取り出すかは、データベース側が考えます。人は欲しいものを書くだけ。この分担が、50年たっても生き残った理由です。
+
+{/* block: naming */}
+## 名前の由来：商標で改名した
+
+もとの名前は SEQUEL（Structured English Query Language）でした<Cite n={1} />。「構造化された英語の問い合わせ言語」という意味です。
+
+ところが、この名前がイギリスの航空機メーカーの商標とぶつかりました。そこで母音を落として SQL にした、という経緯です<Cite n={1} />。
+
+**読み方が割れているのは、この名残です。** 古い名前のまま「シークェル」と読む人と、字のまま「エスキューエル」と読む人がいます。どちらも間違いではありません。日本では「エスキューエル」が優勢です。
+
+{/* block: analogy */}
+## たとえ話：レストランの注文
+
+厨房に入って「まず鍋を出して、火をつけて…」とは言いません。「本日のパスタを1つ」と言うだけです。
+
+どう作るかは厨房が決めます。同じ注文でも、混んでいるときと空いているときで作り方が変わるかもしれません。それでも出てくるものは同じです。
+
+SQL もこれです。「どの順番で読むか」はデータベースが決め、状況に応じて勝手に最適な方法を選びます。
+
+{/* block: figure */}
+## 欲しい行と列だけ取り出す
+
+<Figure name="sql-select" caption="表全体から、条件に合う行と、必要な列だけを取り出します。もとの表は変わりません" />
+
+{/* block: skills */}
+## 最初に覚える3つ
+
+| 書き方 | 意味 |
+|---|---|
+| `SELECT 名前 FROM 社員` | 社員という表から、名前の列を取る |
+| `WHERE 部署 = '営業'` | 営業の行だけに絞る |
+| `ORDER BY 年数 DESC` | 年数の多い順に並べる |
+
+3つを組み合わせると「営業部の人を、在籍年数の多い順に」という注文になります。英語の文としてほぼそのまま読めるのが SQL の特徴です<Cite n={2} />。
+
+{/* block: you */}
+## あなたとの関係
+
+社内の基幹システムから出てくる一覧表は、ほぼ確実に裏で SQL が動いています。
+
+「この条件の一覧がほしい」と情報システム部門に頼むとき、SQL が少し読めると話が早くなります。何が取れて何が取れないかの見当がつくからです。
+
+{/* block: internet */}
+## ネットでの扱われ方
+
+有名な漫画があります。学校から電話がかかってきて「息子さんの名前のせいで生徒データベースが消えました」と言われる話です<Cite n={3} />。息子の名前が、データベースへの命令として解釈される文字列になっていました。
+
+この漫画のおかげで、入力された文字をそのまま命令として扱う危険は「ボビー・テーブルズ」という通称で広く知られています<Cite n={3} />。
+
+{/* block: misunderstanding */}
+## よくある誤解：データベースごとに別の言語
+
+基本は共通です。`SELECT` や `WHERE` の書き方は、どのデータベースでもほぼ同じです<Cite n={1} />。
+
+ただし、日付の扱いや細かい関数には製品ごとの違いがあります。「だいたい同じで、細部が違う」という理解がちょうどよい塩梅です。
+
+{/* block: firststep */}
+## 今日5分でできること
+
+ブラウザで動く SQL の練習サイトを開いて、`SELECT * FROM` と打ってみてください。`*` は「全部の列」という意味です。
+
+まず全部出して、次に `WHERE` で絞る。この2段階が SQL の基本の流れです。
+
+{/* block: materials */}
+## 無料教材
+
+- [SQL - MDN Web Docs 用語集](https://developer.mozilla.org/ja/docs/Glossary/SQL)（無料・日本語）
+- [SQLite の SQL 文法](https://www.sqlite.org/lang.html)（無料・英語）
