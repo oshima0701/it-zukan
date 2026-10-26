@@ -1,0 +1,132 @@
+---
+no: 28
+name: HTTP
+reading: えいちてぃーてぃーぴー
+type: mechanism
+oneLine: ブラウザとサーバーが、ページをやりとりするときの決まり。
+surprise: >
+  状態番号に「418 わたしはティーポットです」というものが実在します。
+  エイプリルフールの冗談として書かれた仕様が、そのまま記録に残っています。
+takeaway: >
+  HTTP は一往復で終わり、サーバーはあなたを覚えていません。ログイン状態を保つしくみが別に要るのは、このためです。
+status:
+  difficulty: 3
+  popularity: 5
+  breadth: 5
+order: 280
+updated: 2026-10-26
+born: 1991
+creators:
+  - name: ティム・バーナーズ＝リー
+    nameEn: Tim Berners-Lee
+    personId: tim-berners-lee
+birthplace:
+  label: スイス・ジュネーブ（CERN）
+  lat: 46.23
+  lng: 6.05
+mascot:
+  name: なし
+officialUrl: https://developer.mozilla.org/ja/docs/Web/HTTP
+aliases: [エイチティーティーピー, HTTPS]
+related:
+  - slug: html
+    relation: partner
+    note: これを運ぶ中身
+  - slug: api
+    relation: descendant
+    note: 同じ決まりの上に建つしくみ
+sources:
+  - id: 1
+    title: HTTP - MDN Web Docs
+    url: https://developer.mozilla.org/ja/docs/Web/HTTP
+    accessed: 2026-10-26
+  - id: 2
+    title: HTTP レスポンスステータスコード - MDN Web Docs
+    url: https://developer.mozilla.org/ja/docs/Web/HTTP/Reference/Status
+    accessed: 2026-10-26
+  - id: 3
+    title: RFC 2324（Hyper Text Coffee Pot Control Protocol、1998年4月1日）
+    url: https://www.rfc-editor.org/rfc/rfc2324
+    accessed: 2026-10-26
+---
+
+{/* block: birth */}
+## なぜ「覚えない」決まりにしたのか？
+
+Web が始まったとき、必要だったのは単純なことでした。文書を要求する。文書が返ってくる。それだけです<Cite n={1} />。
+
+そこで、一往復ごとに話が完結する形になりました。**サーバーは、前に誰が何を頼んだかを覚えません。** 毎回が初対面です。
+
+一見不便ですが、これのおかげでサーバーを何台にも増やせます。覚えていないなら、どの台が応対しても同じ結果になるからです。Web が世界規模に広がれたのは、この「覚えない」設計のおかげでもあります。
+
+代償もあります。買い物かごやログイン状態を保つには、別のしくみを足す必要が出ました<Cite n={1} />。
+
+{/* block: naming */}
+## 名前の由来：ハイパーテキストを転送する手順
+
+HTTP は HyperText Transfer Protocol の頭文字です<Cite n={1} />。
+
+- **HyperText** — 別の文書へ飛べる文書。HTML のページで触れた、あの「飛べる」です
+- **Transfer** — 転送する
+- **Protocol** — 手順の取り決め
+
+末尾に S が付いた **HTTPS** は、このやりとりを暗号化したものです。途中の経路で中身を読まれないようにします。いまはこちらが標準です。
+
+{/* block: analogy */}
+## たとえ話：毎回が初対面の窓口
+
+窓口に行って「これをください」と言うと、出してくれます。ただし、次に行ったときには、職員はあなたを覚えていません。
+
+だから毎回、身分証を出す必要があります。この身分証にあたるのが、ブラウザが保存している小さな記録です。ログインしたまま使えるのは、毎回これを添えて送っているからです。
+
+{/* block: figure */}
+## 一往復で完結する
+
+<Figure name="http-exchange" caption="要求と応答で一往復。終わるとサーバーは覚えていません。だから毎回「わたしは誰か」を添えて送ります" />
+
+{/* block: skills */}
+## 最初に覚える3つ
+
+返ってくる状態の番号は、3桁の最初の数字で大まかに意味が決まります<Cite n={2} />。
+
+| 番号 | 意味 |
+|---|---|
+| 200 番台 | うまくいった |
+| 400 番台 | **頼んだ側**の問題（場所が違う、権限がない） |
+| 500 番台 | **応える側**の問題（サーバーが壊れている） |
+
+この区別が実務で効きます。404 が出たらこちらの問題、500 が出たら向こうの問題。問い合わせ先が変わります。
+
+{/* block: you */}
+## あなたとの関係
+
+「404 Not Found」は、あなたも見たことがあるはずです。あれは HTTP の状態番号です。
+
+サイトが重いとき、`F12` を押してネットワークの欄を見ると、どの要求に時間がかかっているかが見えます。原因が自分側なのか相手側なのか、当たりがつきます。
+
+{/* block: internet */}
+## ネットでの扱われ方
+
+**418 I'm a teapot（わたしはティーポットです）** という状態番号が実在します。1998年の4月1日に冗談の仕様として書かれたものです<Cite n={3} />。
+
+コーヒーを淹れるよう命じられたティーポットが、「わたしはティーポットなので淹れられません」と返す、という設定です<Cite n={3} />。四半世紀たったいまも語り継がれ、実際にこの番号を返すサイトがあります。
+
+{/* block: misunderstanding */}
+## よくある誤解：404 は CERN の404号室が由来
+
+俗説です。Web が生まれた研究所の404号室にサーバーがあったから、という話が広く語られていますが、裏付けがありません。
+
+実際には、400番台が「頼んだ側の問題」、その中の4番目という番号の割り振りに過ぎません<Cite n={2} />。面白い由来ほど疑ってかかる、という良い練習問題です。
+
+{/* block: firststep */}
+## 今日5分でできること
+
+どのサイトでもいいので開いて `F12` を押し、「ネットワーク」の欄を選んでから、ページを読み込み直してください。
+
+一覧が出ます。各行の「状態」の列に、200 や 304 といった番号が並んでいます。これがいま起きた一往復の記録です。
+
+{/* block: materials */}
+## 無料教材
+
+- [HTTP - MDN Web Docs](https://developer.mozilla.org/ja/docs/Web/HTTP)（無料・日本語）
+- [HTTP レスポンスステータスコード - MDN](https://developer.mozilla.org/ja/docs/Web/HTTP/Reference/Status)（無料・日本語）

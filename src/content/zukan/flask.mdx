@@ -1,0 +1,114 @@
+---
+no: 31
+name: Flask
+reading: ふらすく
+type: mechanism
+oneLine: Python で小さなWebの仕組みを作るための、最小限の土台。
+surprise: >
+  Flask はエイプリルフールの冗談として公開されました。
+  作者がふざけて出したものに本気の反応が集まり、そのまま本物になりました。
+takeaway: >
+  最初から全部入っている道具と、必要なものを自分で足す道具があります。Flask は後者です。
+status:
+  difficulty: 3
+  popularity: 4
+  breadth: 3
+order: 310
+updated: 2026-10-26
+born: 2010
+creators:
+  - name: アルミン・ロナッハー
+    nameEn: Armin Ronacher
+    personId: armin-ronacher
+mascot:
+  name: なし
+  origin: ロゴは角杯（飲み物の器）
+officialUrl: https://flask.palletsprojects.com/
+aliases: [フラスク]
+related:
+  - slug: python
+    relation: ancestor
+    note: これで書く
+  - slug: django
+    relation: rival
+    note: 全部入りのほう
+sources:
+  - id: 1
+    title: Flask 公式ドキュメント
+    url: https://flask.palletsprojects.com/
+    accessed: 2026-10-26
+  - id: 2
+    title: Flask (web framework) - Wikipedia
+    url: https://en.wikipedia.org/wiki/Flask_%28web_framework%29
+    accessed: 2026-10-26
+---
+
+{/* block: birth */}
+## 冗談から始まった
+
+2010年のエイプリルフール、作者が冗談として、極端に小さなWebの土台を公開しました<Cite n={2} />。ふざけた見せ方だったにもかかわらず、本気で使いたいという反応が集まります。
+
+そこで本物として作り直されたのが Flask です<Cite n={2} />。
+
+冗談が出発点だったことは、設計にも表れています。**最小限しか用意しない。** データベースの扱いも、利用者の管理も、標準では入っていません。必要なら自分で選んで足します<Cite n={1} />。
+
+{/* block: naming */}
+## 名前の由来：冗談の続き
+
+もとの冗談は、別の作者のプロジェクトをもじったものでした。その流れで、飲み物に関係する名前が付けられています<Cite n={2} />。
+
+ロゴは角杯（つのはい）という飲み物の器です。
+
+ちなみに、Flask が土台として使っている部品群も、同じ作者による冗談の系譜に連なる名前を持っています。名前の付け方ひとつに、この界隈の気質が出ています。
+
+{/* block: analogy */}
+## たとえ話：素の台所
+
+コンロと流しだけがある台所です。鍋も包丁も付いていません。
+
+必要な道具は自分で選んで買います。手間はかかりますが、自分の作る料理に合ったものだけを置けます。
+
+一方、[Django](/zukan/django/) は最初から道具が全部揃った台所です。どちらが良いかではなく、作るものの大きさで決まります。
+
+{/* block: figure */}
+## 骨組みが先にある
+
+<Figure name="framework-scaffold" caption="フレームワークは骨組みを用意し、決められた場所に自分の処理を書かせます。Flask はこの骨組みが薄い側です" />
+
+{/* block: skills */}
+## 最初に覚える3つ
+
+| 言葉 | 意味 |
+|---|---|
+| ルート | どの住所に来たら、どの処理をするか |
+| テンプレート | 画面の型。値を流し込んで HTML にする |
+| リクエスト | 送られてきた中身を受け取る |
+
+1つめだけで、小さなものは動きます。Flask の入門が短いのは、覚えることが本当に少ないからです<Cite n={1} />。
+
+{/* block: you */}
+## あなたとの関係
+
+社内で使う小さな画面を作るのに向きます。「この一覧を社内の誰でも見られるようにしたい」くらいの規模です。
+
+Python で書いた自動化の処理に、ブラウザから触れる入口を付ける。そういう使い方がいちばん現実的です。
+
+{/* block: misunderstanding */}
+## よくある誤解：小さいから本格的な用途には使えない
+
+規模の問題ではありません。大きなサービスでも使われています。
+
+違いは「最初から用意されているか、自分で選ぶか」だけです。選ぶ手間を引き受けられるなら、大きなものも作れます。選びたくないなら Django のほうが楽です。
+
+{/* block: firststep */}
+## 今日5分でできること
+
+公式ドキュメントの最初の例は、10行足らずです。
+
+その10行で、自分のパソコンの中にWebサーバーが立ち上がり、ブラウザから見られるようになります。「Webサーバー」という言葉の重たさと、実物の軽さの差に驚くはずです。
+
+{/* block: materials */}
+## 無料教材
+
+- [Flask 公式ドキュメント](https://flask.palletsprojects.com/)（無料・英語）
+- [Flask クイックスタート](https://flask.palletsprojects.com/en/stable/quickstart/)（無料・英語）

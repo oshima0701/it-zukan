@@ -1,0 +1,128 @@
+---
+no: 32
+name: Django
+reading: じゃんご
+type: mechanism
+oneLine: Python で本格的なWebの仕組みを作るための、全部入りの土台。
+surprise: >
+  名前はジャズギタリストのジャンゴ・ラインハルトから取られています。
+  大火傷で左手の指2本が動かなくなったあと、残った指だけで演奏法を編み出した人です。
+takeaway: >
+  Django は「よくある判断はこちらで決めておきました」という道具です。考える回数が減るぶん、決まりに従う必要があります。
+status:
+  difficulty: 4
+  popularity: 4
+  breadth: 3
+order: 320
+updated: 2026-10-26
+born: 2005
+creators:
+  - name: エイドリアン・ホロバティ
+    nameEn: Adrian Holovaty
+    personId: adrian-holovaty
+  - name: サイモン・ウィリソン
+    nameEn: Simon Willison
+    personId: simon-willison
+birthplace:
+  label: アメリカ・カンザス州ローレンス（新聞社）
+  lat: 38.97
+  lng: -95.23
+mascot:
+  name: なし
+officialUrl: https://www.djangoproject.com/
+aliases: [ジャンゴ]
+related:
+  - slug: python
+    relation: ancestor
+    note: これで書く
+  - slug: flask
+    relation: rival
+    note: 最小限のほう
+sources:
+  - id: 1
+    title: Django 公式サイト
+    url: https://www.djangoproject.com/
+    accessed: 2026-10-26
+  - id: 2
+    title: Django (web framework) - Wikipedia
+    url: https://en.wikipedia.org/wiki/Django_%28web_framework%29
+    accessed: 2026-10-26
+  - id: 3
+    title: Django Reinhardt - Wikipedia
+    url: https://en.wikipedia.org/wiki/Django_Reinhardt
+    accessed: 2026-10-26
+---
+
+{/* block: birth */}
+## 新聞社の締切から生まれた
+
+Django は2005年、アメリカの地方新聞社の中で作られました<Cite n={2} />。
+
+新聞の現場には締切があります。「明日までにこの特集用のページを作る」といった仕事が、次々に降ってきます。毎回ゼロから作っていては間に合いません。
+
+そこで、**よくある作業をあらかじめ全部用意しておく**土台が作られました。管理画面、利用者の認証、データベースの扱い、安全対策。最初から入っています<Cite n={1} />。
+
+締切に追われる現場で生まれたので、「早く作れること」が設計の中心にあります。
+
+{/* block: naming */}
+## 名前の由来：指2本のギタリスト
+
+ジャズギタリストのジャンゴ・ラインハルトにちなみます<Cite n={2} />。
+
+この人の経歴が印象的です。18歳のとき火事で大火傷を負い、左手の薬指と小指がほとんど動かなくなりました<Cite n={3} />。ギタリストとしては致命的です。
+
+彼は残った2本の指だけで弾ける奏法を編み出し、ジャズ史に残る演奏家になりました<Cite n={3} />。
+
+制約の中で最大限をやる。その名前を、締切に追われる新聞社で生まれた道具に付けたわけです。
+
+{/* block: analogy */}
+## たとえ話：全部揃った台所
+
+鍋も包丁も調味料も揃っています。引き出しの場所も決まっています。
+
+初日から料理を始められます。そのかわり、「わたしは包丁をここに置きたい」は通りません。決められた場所に従います。
+
+[Flask](/zukan/flask/) が素の台所だとすれば、Django は業務用の厨房です。
+
+{/* block: figure */}
+## 骨組みが先にある
+
+<Figure name="framework-scaffold" caption="Django はこの骨組みが厚い側です。安全の決まりも、データの出し入れも、管理画面も最初から入っています" />
+
+{/* block: skills */}
+## 最初に覚える3つ
+
+| 言葉 | 意味 |
+|---|---|
+| モデル | データの形の定義。表の設計にあたる |
+| ビュー | 要求を受けて、何を返すか決める処理 |
+| テンプレート | 画面の型 |
+
+この3つに分ける考え方が Django の背骨です<Cite n={1} />。どこに何を書くか迷わずに済むのが、全部入りの利点です。
+
+{/* block: you */}
+## あなたとの関係
+
+管理画面が自動で作られるのが、実務では効きます。データの形を定義するだけで、一覧・検索・追加・編集の画面がひととおり出来上がります<Cite n={1} />。
+
+社内の台帳システムのようなものなら、これだけで足りてしまうこともあります。
+
+{/* block: misunderstanding */}
+## よくある誤解：重いから遅い
+
+用意されているものが多いことと、動きが遅いことは別です。大規模なサービスでも使われています。
+
+「重い」と感じるのは、覚えることの多さのほうです。最初の学習が Flask より長くなるのは確かですが、覚えたあとは判断の回数が減ります。
+
+{/* block: firststep */}
+## 今日5分でできること
+
+公式サイトの入門を開いて、最初の手順だけ見てください。
+
+`django-admin startproject` と打つだけで、フォルダとファイルが一式できます。この「最初から用意されている」感覚が、Flask との違いそのものです。
+
+{/* block: materials */}
+## 無料教材
+
+- [Django 公式サイト](https://www.djangoproject.com/)（無料・英語）
+- [はじめての Django アプリ作成](https://docs.djangoproject.com/ja/stable/intro/tutorial01/)（無料・日本語）
