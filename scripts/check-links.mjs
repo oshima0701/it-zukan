@@ -51,6 +51,9 @@ const check = async (url) => {
     if (r.status === 405 || r.status === 403 || r.status === 501) {
       r = await fetch(url, { ...opts, method: 'GET' });
     }
+    // 403 / 429 は「機械からの確認を断られた」であって「死んでいる」ではない。
+    // 人がブラウザで開けば読める。止めずに、確かめられなかったものとして知らせる。
+    if (r.status === 403 || r.status === 429) return { ok: true, refused: r.status };
     return { ok: r.ok, status: r.status };
   } catch (e) {
     return { ok: false, status: e.name === 'TimeoutError' ? '時間切れ' : e.message };
@@ -61,17 +64,25 @@ const list = [...urls.keys()];
 console.log(`${list.length} 本のリンクを確かめます…`);
 
 const bad = [];
+const refused = [];
 const size = 6;
 for (let i = 0; i < list.length; i += size) {
   const batch = list.slice(i, i + size);
   const results = await Promise.all(batch.map(check));
   results.forEach((r, j) => {
     const u = batch[j];
-    if (!r.ok) bad.push({ url: u, status: r.status, files: [...new Set(urls.get(u))] });
+    if (r.refused) refused.push({ url: u, status: r.refused });
+    else if (!r.ok) bad.push({ url: u, status: r.status, files: [...new Set(urls.get(u))] });
   });
   process.stdout.write(`  ${Math.min(i + size, list.length)} / ${list.length}\r`);
 }
 console.log('');
+
+if (refused.length) {
+  console.log(`機械からの確認を断られたもの ${refused.length} 本（人がブラウザで開けば読めます。目で確かめてください）:`);
+  for (const r of refused) console.log(`  - [${r.status}] ${r.url}`);
+  console.log('');
+}
 
 if (bad.length) {
   console.error(`\nつながらなかったリンク ${bad.length} 本:`);
